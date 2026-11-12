@@ -26,6 +26,8 @@ class Config:
     def __init__(self, config_path: str = "data/config.json", groups_path: str = "groups.json"):
         self.config_path = config_path
         self.groups_path = groups_path
+        # Optional callback(description) run after groups are added/edited/deleted
+        self.on_groups_changed = None
         self.config_data = self._load_config()
 
     def _load_config(self) -> Dict:
@@ -120,6 +122,7 @@ class Config:
 
         self.config_data["groups"].append(new_group)
         self.save_config()
+        self._notify_groups_changed(f"added {telegram_group_name} -> {slack_channel_name}")
         return group_id
 
     def update_group(self, group_id: str, **kwargs):
@@ -128,19 +131,26 @@ class Config:
             if group["id"] == group_id:
                 group.update(kwargs)
                 self.save_config()
+                self._notify_groups_changed(f"edited {group.get('telegram_group_name', group_id)}")
                 return True
         return False
 
     def delete_group(self, group_id: str) -> bool:
         """Delete a group"""
-        original_length = len(self.config_data["groups"])
+        removed = [g for g in self.config_data["groups"] if g["id"] == group_id]
         self.config_data["groups"] = [
             g for g in self.config_data["groups"] if g["id"] != group_id
         ]
-        if len(self.config_data["groups"]) < original_length:
+        if removed:
             self.save_config()
+            self._notify_groups_changed(f"deleted {removed[0].get('telegram_group_name', group_id)}")
             return True
         return False
+
+    def _notify_groups_changed(self, description: str) -> None:
+        """Tell the listener (e.g. the GitHub backup) that groups.json changed"""
+        if self.on_groups_changed:
+            self.on_groups_changed(description)
 
     def get_group(self, group_id: str) -> Optional[Dict]:
         """Get a specific group"""

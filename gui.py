@@ -1,6 +1,8 @@
 import flet as ft
 import asyncio
+import os
 from config import Config
+from git_backup import GitBackup
 from message_forwarder import MessageForwarder
 
 class TelegramToSlackGUI:
@@ -15,6 +17,17 @@ class TelegramToSlackGUI:
         self.page.scroll = ft.ScrollMode.AUTO
 
         self.config = Config()
+
+        # Back up groups.json to GitHub automatically whenever groups change
+        self.git_backup = GitBackup(
+            repo_dir=os.path.dirname(os.path.abspath(__file__)),
+            on_status=self._show_backup_status,
+        )
+        if self.config.config_data.get("git_backup", True):
+            self.config.on_groups_changed = self.git_backup.schedule
+        # Intercept closing so a pending backup can finish first
+        self.page.window.prevent_close = True
+        self.page.window.on_event = self._on_window_event
         self.forwarder = MessageForwarder(self.config)
         self.is_forwarding = False
 
@@ -708,6 +721,26 @@ class TelegramToSlackGUI:
         self.page.overlay.append(dialog)
         dialog.open = True
         self.page.update()
+
+
+    def _show_backup_status(self, ok: bool, message: str):
+        """Show the result of a GitHub backup (called from a background thread)"""
+        try:
+            self.page.open(ft.SnackBar(
+                ft.Text(("✓ " if ok else "⚠ ") + message),
+                bgcolor=None if ok else ft.Colors.ORANGE_800,
+                duration=3000 if ok else 8000,
+            ))
+        except Exception:
+            pass  # window may be closing
+
+    def _on_window_event(self, e):
+        """Finish any pending GitHub backup before the window closes"""
+        if e.data == "close":
+            try:
+                self.git_backup.flush()
+            finally:
+                self.page.window.destroy()
 
 
 def main(page: ft.Page):

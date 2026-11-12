@@ -144,7 +144,7 @@ first** to avoid using one login from two places at once.
    ```powershell
    scp -i $HOME\.ssh\oracle.key groups.json ubuntu@SERVER_IP:forward_to_slack/
    ```
-   Also commit and push `groups.json` so GitHub keeps a backup of the change.
+   (The laptop app already backed the change up to GitHub automatically.)
 4. **Server:** `sudo systemctl start telegram-forwarder`
 
 ## Updating the code

@@ -155,7 +155,7 @@ Never run the laptop app's forwarding and the server at the same time.
 
 ### Backing up and restoring
 
-- **Groups** are saved in `groups.json`. After adding, editing or deleting groups, commit and push it so GitHub always has the latest list.
+- **Groups** are saved in `groups.json` and **backed up to GitHub automatically**: a few seconds after you add, edit or delete a group, the app commits only `groups.json` and pushes it. A message at the bottom of the window confirms the backup or explains why it failed (e.g. no internet); a failed backup is retried with the next change. To turn this off, add `"git_backup": false` to `data/config.json`.
 - **Keys** are not in Git, but they can always be fetched again: API ID and API Hash from https://my.telegram.org, and the bot token from your Slack app's "OAuth & Permissions" page. Storing them in a password manager makes this quicker.
 - **On a new computer**: clone the repo, start the app, then enter the keys under "Telegram Settings" and "Slack Settings". All groups are already there.
 
