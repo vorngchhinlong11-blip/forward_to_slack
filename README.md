@@ -139,6 +139,20 @@ Type in the "Search groups / channels" box next to the "Registered Groups" headi
 - Delete: click the 🗑️ icon on a group card
 - Enable / disable: toggle the "Enabled" switch in the edit dialog
 
+### Running on a server (24/7, no laptop)
+
+`run_server.py` runs the forwarder without the window, as a service that starts
+on boot and restarts itself after crashes. Step-by-step instructions for a free
+Oracle Cloud server are in [deploy/ORACLE_SETUP.md](deploy/ORACLE_SETUP.md).
+
+```bash
+python run_server.py --check   # verify Slack + Telegram login
+python run_server.py --login   # log in to Telegram over SSH if needed
+python run_server.py           # forward until stopped
+```
+
+Never run the laptop app's forwarding and the server at the same time.
+
 ## About threads
 
 Telegram tends to have many short messages, so grouping them into Slack threads keeps channels tidy:

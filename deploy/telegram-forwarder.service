@@ -1,0 +1,21 @@
+[Unit]
+Description=Telegram to Slack Forwarder
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/forward_to_slack
+ExecStart=/home/ubuntu/forward_to_slack/venv/bin/python run_server.py
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONIOENCODING=utf-8
+
+# Restart automatically after crashes, disconnects and reboots
+Restart=always
+RestartSec=15
+# ...but not when Telegram isn't logged in (exit code 3) - fix with --login
+RestartPreventExitStatus=3
+
+[Install]
+WantedBy=multi-user.target
