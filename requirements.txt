@@ -1,0 +1,5 @@
+telethon==1.42.0
+slack-sdk==3.39.0
+flet==0.28.3
+python-dotenv==1.2.1
+aiofiles==25.1.0

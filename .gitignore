@@ -1,0 +1,16 @@
+# Secrets and local state (created by the app at runtime)
+data/
+*.session
+*.session-journal
+
+# Temporary media downloads
+downloads/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# macOS zip artifacts
+__MACOSX/
+.DS_Store
