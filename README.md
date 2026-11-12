@@ -153,6 +153,12 @@ python run_server.py           # forward until stopped
 
 Never run the laptop app's forwarding and the server at the same time.
 
+### Backing up and restoring
+
+- **Groups** are saved in `groups.json`. After adding, editing or deleting groups, commit and push it so GitHub always has the latest list.
+- **Keys** are not in Git, but they can always be fetched again: API ID and API Hash from https://my.telegram.org, and the bot token from your Slack app's "OAuth & Permissions" page. Storing them in a password manager makes this quicker.
+- **On a new computer**: clone the repo, start the app, then enter the keys under "Telegram Settings" and "Slack Settings". All groups are already there.
+
 ## About threads
 
 Telegram tends to have many short messages, so grouping them into Slack threads keeps channels tidy:
@@ -219,6 +225,7 @@ Keep an eye on storage if you forward a lot of files.
 
 - Keep your API keys and tokens safe
 - `data/config.json` contains your credentials — never commit it to Git
+- `groups.json` (your registered groups) contains no secrets and **is** committed, so a fresh clone keeps all your groups. Keep the repository private, as it lists your group and channel names
 - `telegram_session.session` is a logged-in Telegram session — treat it like a password and never commit it either
 - Both are already excluded in `.gitignore`
 
@@ -274,8 +281,9 @@ forward_to_slack/
 ├── run_mac.sh                # macOS/Linux start script (includes setup)
 ├── requirements.txt          # Dependencies (pinned versions)
 ├── .gitignore                # Git exclusions
+├── groups.json               # Registered groups (in Git, as a backup)
 ├── data/                     # Created automatically, not in Git
-│   ├── config.json           # Credentials and group settings
+│   ├── config.json           # Telegram/Slack credentials
 │   └── thread_cache.json     # Thread cache
 ├── downloads/                # Temporary media files (auto-created and auto-deleted)
 ├── venv/                     # Python virtual environment (auto-created)

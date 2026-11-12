@@ -3,16 +3,34 @@ import os
 from typing import Dict, List, Optional
 from pathlib import Path
 
-class Config:
-    """Configuration manager"""
 
-    def __init__(self, config_path: str = "data/config.json"):
+def _write_json(path: str, data) -> None:
+    """Write JSON atomically so a crash can't leave a half-written file"""
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    tmp_path = path + ".tmp"
+    with open(tmp_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    os.replace(tmp_path, path)
+
+class Config:
+    """Configuration manager
+
+    Settings are split across two files:
+    - groups.json        : registered groups (no secrets; kept in Git as a backup)
+    - data/config.json   : Telegram/Slack credentials (secret; never in Git)
+    """
+
+    def __init__(self, config_path: str = "data/config.json", groups_path: str = "groups.json"):
         self.config_path = config_path
+        self.groups_path = groups_path
         self.config_data = self._load_config()
 
     def _load_config(self) -> Dict:
-        """Load the config file"""
-        default_config = {
+        """Load credentials and groups"""
+        config = {
             "groups": [],
             "telegram": {
                 "api_id": "",
@@ -25,22 +43,31 @@ class Config:
             }
         }
 
+        legacy_groups = None
         if os.path.exists(self.config_path):
             with open(self.config_path, 'r', encoding='utf-8') as f:
-                config = json.load(f)
-                # Fill in missing keys with default values
-                for key, value in default_config.items():
-                    if key not in config:
-                        config[key] = value
-                return config
-        else:
-            return default_config
+                stored = json.load(f)
+            # Older versions kept the groups inside data/config.json
+            legacy_groups = stored.pop("groups", None)
+            config.update(stored)
+
+        if legacy_groups is not None:
+            # Groups found in data/config.json are always the newest copy
+            # (current code never writes them there), so migrate them.
+            config["groups"] = legacy_groups
+            self.config_data = config
+            self.save_config()
+        elif os.path.exists(self.groups_path):
+            with open(self.groups_path, 'r', encoding='utf-8') as f:
+                config["groups"] = json.load(f)
+
+        return config
 
     def save_config(self):
-        """Save to the config file"""
-        os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
-        with open(self.config_path, 'w', encoding='utf-8') as f:
-            json.dump(self.config_data, f, indent=2, ensure_ascii=False)
+        """Save groups to groups.json and credentials to data/config.json"""
+        _write_json(self.groups_path, self.config_data.get("groups", []))
+        secrets = {k: v for k, v in self.config_data.items() if k != "groups"}
+        _write_json(self.config_path, secrets)
 
     # Telegram settings
     def get_telegram_config(self) -> Dict:

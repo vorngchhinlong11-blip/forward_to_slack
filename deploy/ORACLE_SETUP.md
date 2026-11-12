@@ -59,13 +59,13 @@ Type `exit` to come back to the laptop.
    (The session file and thread cache must not be in use while copying, and
    the laptop and server must never forward at the same time.)
 
-2. **Laptop** — copy the code, settings, thread cache and Telegram login:
+2. **Laptop** — copy the code, groups, keys, thread cache and Telegram login:
 
 ```powershell
 $ip  = "SERVER_IP"
 $key = "$HOME\.ssh\oracle.key"
 ssh -i $key ubuntu@$ip "mkdir -p forward_to_slack/data forward_to_slack/deploy"
-scp -i $key config.py message_forwarder.py slack_handler.py telegram_handler.py run_server.py requirements-server.txt telegram_session.session ubuntu@${ip}:forward_to_slack/
+scp -i $key config.py message_forwarder.py slack_handler.py telegram_handler.py run_server.py requirements-server.txt groups.json telegram_session.session ubuntu@${ip}:forward_to_slack/
 scp -i $key deploy/setup_server.sh deploy/telegram-forwarder.service ubuntu@${ip}:forward_to_slack/deploy/
 scp -i $key data/config.json data/thread_cache.json ubuntu@${ip}:forward_to_slack/data/
 ```
@@ -140,10 +140,11 @@ first** to avoid using one login from two places at once.
 
 1. **Server:** `sudo systemctl stop telegram-forwarder`
 2. **Laptop:** open the app, add/edit groups — **don't** click Start Forwarding — close the app.
-3. **Laptop:** upload only the settings (not the thread cache — the server's is newer):
+3. **Laptop:** upload only the group list (not the thread cache — the server's is newer):
    ```powershell
-   scp -i $HOME\.ssh\oracle.key data/config.json ubuntu@SERVER_IP:forward_to_slack/data/
+   scp -i $HOME\.ssh\oracle.key groups.json ubuntu@SERVER_IP:forward_to_slack/
    ```
+   Also commit and push `groups.json` so GitHub keeps a backup of the change.
 4. **Server:** `sudo systemctl start telegram-forwarder`
 
 ## Updating the code

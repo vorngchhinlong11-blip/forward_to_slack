@@ -1,0 +1,866 @@
+[
+  {
+    "id": "f125b2e0-c947-4c83-a1e2-476a43a3744d",
+    "telegram_group_id": -1002207016123,
+    "telegram_group_name": "NOVA - Digital Prmotion Dept.",
+    "slack_channel_id": "C01SCGQF9BL",
+    "slack_channel_name": "#nova-marketing",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "653d4207-11d9-460c-b880-c943d69a1a66",
+    "telegram_group_id": -5070154139,
+    "telegram_group_name": "Forwarder test",
+    "slack_channel_id": "CRXMR0AFM",
+    "slack_channel_name": "#seats-forwarding_tool",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "bb524b5d-dc06-4c42-bf83-9e769b845fa8",
+    "telegram_group_id": -1002735013387,
+    "telegram_group_name": "AKARA <=> JETRO",
+    "slack_channel_id": "C01D3Q3906S",
+    "slack_channel_name": "#pj-jetro",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "1a66e3e8-782d-4c31-add1-a336fc500c26",
+    "telegram_group_id": -1002187662302,
+    "telegram_group_name": "D2C Offline Business",
+    "slack_channel_id": "C06K5TSPC1E",
+    "slack_channel_name": "#d2coffline-bizplanning",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "169bce0b-9eee-4666-ab00-4a4c62f256c3",
+    "telegram_group_id": -1002365261545,
+    "telegram_group_name": "LOKA-OPERATION DEPT.",
+    "slack_channel_id": "CMEABJMFS",
+    "slack_channel_name": "#loka-op-mtg_ymym",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "cf120746-07a4-412b-b88c-93c8bb8f3689",
+    "telegram_group_id": -1002262176168,
+    "telegram_group_name": "Inventory Management Group (IM Team)",
+    "slack_channel_id": "C03ULPCPVV2",
+    "slack_channel_name": "#loka-op_inventory_management",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "b4977ed2-b5c7-4ad1-b186-934bfd9c6c01",
+    "telegram_group_id": -1001626166770,
+    "telegram_group_name": "LOKA & CKF",
+    "slack_channel_id": "C0177JPCXA9",
+    "slack_channel_name": "#cl-2c-choronai",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "7580309d-d9ea-4062-a0b1-6da53b426677",
+    "telegram_group_id": -5264398304,
+    "telegram_group_name": "AEON Fishery Dept",
+    "slack_channel_id": "C015QLLKM7F",
+    "slack_channel_name": "#cl-2c-aeon_fish_meat_etc",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "ccc1cdbc-f971-4f0f-96c0-39ad70a30ac9",
+    "telegram_group_id": -5215983047,
+    "telegram_group_name": "SEAT X AEON DELICA HQ",
+    "slack_channel_id": "C05KVSCALUX",
+    "slack_channel_name": "#cl-2b-85_bakery",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "2e54aeae-6692-4db9-ab2d-835488ae0b4e",
+    "telegram_group_id": -5199254984,
+    "telegram_group_name": "Caprilicious Skybar ⇄ LOKA",
+    "slack_channel_id": "C0AFD8VSQ79",
+    "slack_channel_name": "#cl-2b_caprilicious_and_drinx_skybar",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "75a0bbae-9c9e-4a12-8d12-b993839de413",
+    "telegram_group_id": -4777547382,
+    "telegram_group_name": "GC Sambo & Loka",
+    "slack_channel_id": "C0A5RAKSX7C",
+    "slack_channel_name": "#cl-2b_mr-sambo",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "7f105988-c113-472c-9301-21ed4483e67c",
+    "telegram_group_id": -4993158716,
+    "telegram_group_name": "Sushi Taka<=> LOKA",
+    "slack_channel_id": "C09TWJJLQTG",
+    "slack_channel_name": "#cl-2b_sushi_taka",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "9346e46d-5a7f-486c-8ae3-af05e4ecbacd",
+    "telegram_group_id": -5091449018,
+    "telegram_group_name": "85 Bakery ⇄ Loka",
+    "slack_channel_id": "C05KVSCALUX",
+    "slack_channel_name": "#cl-2b-85_bakery",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "7a053403-30e4-4968-9adb-1866104c8087",
+    "telegram_group_id": -4962262028,
+    "telegram_group_name": "Bread Talk & Loka",
+    "slack_channel_id": "C05HAM005HR",
+    "slack_channel_name": "#cl-2b-breadtalk_bakery",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "b97e6055-83ea-40ce-8eb7-321b03c6efa4",
+    "telegram_group_id": -5011228129,
+    "telegram_group_name": "Snack R, Club L<=>LOKA",
+    "slack_channel_id": "C0182NUTBLG",
+    "slack_channel_name": "#cl-2b-377_club_l",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "3bc0ce65-ddbe-4bab-b6fa-6e35c6689052",
+    "telegram_group_id": -5288075514,
+    "telegram_group_name": "En donburi Koh Pich ~ LOKA",
+    "slack_channel_id": "C017BFM04JX",
+    "slack_channel_name": "#cl-2b-endonburi",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "a5c5d9cf-6f69-41ef-b355-e3ad5ff0a332",
+    "telegram_group_id": -5202416657,
+    "telegram_group_name": "Fuji no Kintaro ⇄ LOKA",
+    "slack_channel_id": "C0APMNLFRFT",
+    "slack_channel_name": "#cl-2b-fuji_no_kintaro",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "659bdf0e-23d0-4699-87bc-271c745e8fcf",
+    "telegram_group_id": -404324766,
+    "telegram_group_name": "Loka<=>Genki Aeon 2",
+    "slack_channel_id": "C016UHN66BZ",
+    "slack_channel_name": "#cl-2b-genki_bkk_92_genki_aeon2_304",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "75f1504a-c32a-4919-b58a-78252b441d80",
+    "telegram_group_id": -5246526721,
+    "telegram_group_name": "LOKA Supply & Matsusaka 60m",
+    "slack_channel_id": "C0799STP135",
+    "slack_channel_name": "#cl-2b-gyu-miya",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "ef45d7ca-fdc0-4a1e-a41f-bf229009c1fd",
+    "telegram_group_id": -4057471265,
+    "telegram_group_name": "Sofitel ↔Loka",
+    "slack_channel_id": "C045FVBUVV3",
+    "slack_channel_name": "#cl-2b-hachi_sofitel_phnompenh",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "8d887073-6108-48a0-8d45-14a68e4f7166",
+    "telegram_group_id": -5245063598,
+    "telegram_group_name": "Haru Sushi ⇄ LOKA",
+    "slack_channel_id": "C0AJL0XCSAH",
+    "slack_channel_name": "#cl-2b-haru_sushi",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "3156b5f3-a987-4f1b-aed7-6e2c2b9aa29a",
+    "telegram_group_id": -4728911128,
+    "telegram_group_name": "Tsutaya Bookstore <=> LOKA",
+    "slack_channel_id": "C08A0C6PMSQ",
+    "slack_channel_name": "#cl-2b-ivy_tokyo_tsutaya_bookstore",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "eefb3b74-14c1-47ff-94b5-e2d3bd2a0665",
+    "telegram_group_id": -5188829299,
+    "telegram_group_name": "LOKA Supply & Jinli Yakiniku",
+    "slack_channel_id": "C09DM0H64SZ",
+    "slack_channel_name": "#cl-2b-jinli_yakiniku",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "a5af72be-80f9-48d7-97e0-a037057046fa",
+    "telegram_group_id": -4501554051,
+    "telegram_group_name": "LOKA<=> Kami Sushi",
+    "slack_channel_id": "C017MTZKJPK",
+    "slack_channel_name": "#cl-2b-kamisushi_bkk295_tk_296",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "003b4d33-ec42-4da7-a46e-75c1123efc96",
+    "telegram_group_id": -5125721819,
+    "telegram_group_name": "Katanashi garden 様 <=> S.E.A.T.S Inc.",
+    "slack_channel_id": "C0A7LTV5C5R",
+    "slack_channel_name": "#cl-2b-katanashi_garden",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "06ea5a01-a9db-4771-95bb-2ff43302ebdc",
+    "telegram_group_id": -4243787488,
+    "telegram_group_name": "Loka FnB X Kairō",
+    "slack_channel_id": "C079XL2MDK6",
+    "slack_channel_name": "#cl-2b-kozue_omakase",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "c06d8e1c-df18-43df-b524-53add28c62fa",
+    "telegram_group_id": -4676607926,
+    "telegram_group_name": "Nikutei Akiba様 <=> LOKA",
+    "slack_channel_id": "C087JH4M5L7",
+    "slack_channel_name": "#cl-2b-nikutei_akiba",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "58687426-9653-43a4-9351-9315a4fa87a1",
+    "telegram_group_id": -5179302577,
+    "telegram_group_name": "Nut Restaurant & LOKA",
+    "slack_channel_id": "C0AKAJJ8X5G",
+    "slack_channel_name": "#cl-2b-nut_restaurant",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "43f6147d-0b1c-436e-8901-5bbbfee23445",
+    "telegram_group_id": -5289786101,
+    "telegram_group_name": "Loka supplier & Sushi Niwa",
+    "slack_channel_id": "C016LTTKD8X",
+    "slack_channel_name": "#cl-2b-sushi_niwa",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "cac98dc8-bb44-43d7-8d3a-fc1902cc61d3",
+    "telegram_group_id": -5156843830,
+    "telegram_group_name": "Yakiniku Kazu ⇄ LOKA / S.E.A.T.S Farm",
+    "slack_channel_id": "C0ACR5XN3FT",
+    "slack_channel_name": "#cl-2b-yakiniku_kazu",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "30878388-82e2-4ebf-9bd3-16c8e16df71d",
+    "telegram_group_id": -4866865326,
+    "telegram_group_name": "【For Inquiries】OOTOYA 様 <=> S.E.A.T.S Inc.",
+    "slack_channel_id": "C08K6KE910C",
+    "slack_channel_name": "#cl-2b-ootoya",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "42ef4b5a-f6c1-4b63-b46d-dadffa4a0c81",
+    "telegram_group_id": -875089098,
+    "telegram_group_name": "Siso Bakery&Loka",
+    "slack_channel_id": "C07892PTCHG",
+    "slack_channel_name": "#cl-2b-siso_bakery",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "21e3cefe-4cfa-4477-8c50-dd8d5714cee8",
+    "telegram_group_id": -4281080867,
+    "telegram_group_name": "LOKA<=>Hugo Restaurant (sushi rice)",
+    "slack_channel_id": "C0AP2BNUZ33",
+    "slack_channel_name": "#cl-c2c_hugo_cogne",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "43f6ee3d-16af-44d7-ad74-6d49d911922c",
+    "telegram_group_id": -894278724,
+    "telegram_group_name": "GR.Loka Food&Beverage ( Master Suski Soup)",
+    "slack_channel_id": "C044J3MUGCE",
+    "slack_channel_name": "#cl-2b_master_sukisoup_group",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "93aab8cc-5966-4b22-abec-3207bfd02ff4",
+    "telegram_group_id": -4003645669,
+    "telegram_group_name": "Chomka Seafood <=> LOKA",
+    "slack_channel_id": "C0705T230LX",
+    "slack_channel_name": "#cl-2b-chomka_seafood",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "1fc4d5a2-b93e-4707-9b6c-42282e61deb8",
+    "telegram_group_id": -4035925487,
+    "telegram_group_name": "LOKA & Topaz",
+    "slack_channel_id": "C070Y979VQB",
+    "slack_channel_name": "#cl-2b-thalias",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "ed85edd2-d543-4277-8f01-fafd0399b0ca",
+    "telegram_group_id": -4020491285,
+    "telegram_group_name": "Emion Hotel PP ↔ Loka",
+    "slack_channel_id": "C05U698HGTX",
+    "slack_channel_name": "#cl-2b-emion_hotel_phnompenh",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "f7ed0eaa-f06c-4530-9dcf-249b25bc23a0",
+    "telegram_group_id": -4219833196,
+    "telegram_group_name": "Garaku & Loka",
+    "slack_channel_id": "C015Y0FDJKC",
+    "slack_channel_name": "#cl-2b-garaku",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "9e81ce3a-99f1-4718-b3d5-926d7d0055eb",
+    "telegram_group_id": -4642591963,
+    "telegram_group_name": "Maruhachi & LOKA",
+    "slack_channel_id": "C08AMPFSJ49",
+    "slack_channel_name": "#cl-2b-maruhachi",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "301f54d0-57b8-49b8-b9db-cf01294a5fe4",
+    "telegram_group_id": -913799329,
+    "telegram_group_name": "Loka<=> Sushi luck",
+    "slack_channel_id": "C04TH0Q0RK7",
+    "slack_channel_name": "#cl-2b-sushi_luck",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "40c78535-a5f7-4e1e-b8ff-aa81f4b798bc",
+    "telegram_group_id": -4850797955,
+    "telegram_group_name": "Kushikatsu Samurai 様 <=> S.E.A.T.S Inc.",
+    "slack_channel_id": "C07FT1154B1",
+    "slack_channel_name": "#cl-2b-kushikatsu_samurai_sr",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "0bf4b4b1-9858-4f25-81b8-40a343c4e509",
+    "telegram_group_id": -838325786,
+    "telegram_group_name": "Muteki - LOKA",
+    "slack_channel_id": "C05TCHZ4XEG",
+    "slack_channel_name": "#cl-2b-muteki",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "cf1d3d53-8d16-411e-b132-82c4c14d46ba",
+    "telegram_group_id": -4174314277,
+    "telegram_group_name": "Riceholic - LOKA/S.E.A.T.S Farm",
+    "slack_channel_id": "C018FC8CVLK",
+    "slack_channel_name": "#cl-2b-riceholic",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "6ffa76d8-3117-48bb-80af-69cb29fea6ad",
+    "telegram_group_id": -4988126985,
+    "telegram_group_name": "Tonkotsu Kazan & LOKA",
+    "slack_channel_id": "C09NCH199NE",
+    "slack_channel_name": "#cl-2b-tonkotsu_kazan",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "50a709e8-53f4-4f16-980e-6e038a688563",
+    "telegram_group_id": -1003861806458,
+    "telegram_group_name": "LOKA<=>Rumor",
+    "slack_channel_id": "C0AELJ1B24B",
+    "slack_channel_name": "#cl_2b_rumor",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "a7130878-bd17-4a91-9142-4afc1da558f5",
+    "telegram_group_id": -4690955308,
+    "telegram_group_name": "Tonthx様 <=> LOKA",
+    "slack_channel_id": "C087Z3WS6FL",
+    "slack_channel_name": "#cl-2b-tonthx",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "026101bb-ddaa-4ec3-80f5-63f47ad4696e",
+    "telegram_group_id": -5058074258,
+    "telegram_group_name": "S.E.A.T.S Inc. <=> OKADA 様",
+    "slack_channel_id": "C0A5B1U3PEY",
+    "slack_channel_name": "#cl-2b-okada",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "37f9cff8-30e3-400c-9712-6f729eea67d7",
+    "telegram_group_id": -4182754200,
+    "telegram_group_name": "Shunraku & Loka",
+    "slack_channel_id": "C06V5KUNALF",
+    "slack_channel_name": "#cl-2b-shunraku_japanese_restaurant",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "ac15fe3a-293d-424e-8852-b5d6dbe28502",
+    "telegram_group_id": -4626968620,
+    "telegram_group_name": "I’m Hungry様⇄S.E.A.T.S Inc.",
+    "slack_channel_id": "C08QQDW0R8C",
+    "slack_channel_name": "#cl-2b-im_hungry_454",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "c54fa417-1ea4-491b-bc3a-6ba6a8cab762",
+    "telegram_group_id": -4783207360,
+    "telegram_group_name": "LOKA <=> Kachidokiya",
+    "slack_channel_id": "C098S09NRMW",
+    "slack_channel_name": "#cl-2b-kachidokiya",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "20ad0338-f888-41e2-97f1-618c32fdc2e2",
+    "telegram_group_id": -4231072547,
+    "telegram_group_name": "LOKA & Vehaa Restaurant",
+    "slack_channel_id": "C07DAH1S15G",
+    "slack_channel_name": "#cl-2b-vehaa_restaurant",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "5d84c5eb-bedd-45b0-a39b-48327e720021",
+    "telegram_group_id": -4133853471,
+    "telegram_group_name": "LOKA<=>JUICY MERCY 유부",
+    "slack_channel_id": "C070CDLUZMX",
+    "slack_channel_name": "#cl-c2c-juicymercy_bkk",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "efc58fe0-3771-4be7-a8f1-84aae58c82a9",
+    "telegram_group_id": -5038841292,
+    "telegram_group_name": "White Cave - LOKA",
+    "slack_channel_id": "C0A4YD1K8FJ",
+    "slack_channel_name": "#cl-2b_white_cave",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "b0083d33-b81d-401e-b85e-6d1813fd142a",
+    "telegram_group_id": -5286141745,
+    "telegram_group_name": "Soma Hotel Riverside <=> S.E.A.T.S Inc.",
+    "slack_channel_id": "C0ACA5ALFB2",
+    "slack_channel_name": "#cl-2b-soma_hotel",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "5fb851d9-ec7a-4aaf-85c3-a43623ca8d01",
+    "telegram_group_id": -5045807672,
+    "telegram_group_name": "GROOVE LISTENING BAR⇄S.E.A.T.S Inc.",
+    "slack_channel_id": "C0AAJFGMQKZ",
+    "slack_channel_name": "#cl-2b-groove-listening_bar",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "36c303da-8f27-44ca-b5c2-1c80289da389",
+    "telegram_group_id": -796703708,
+    "telegram_group_name": "Loka<=>Pizzaria Matteo",
+    "slack_channel_id": "C015B9F78CX",
+    "slack_channel_name": "#cl-2b-matteo",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "c851738b-9d5a-4e68-81eb-aa47a4fdc2bc",
+    "telegram_group_id": -5147285015,
+    "telegram_group_name": "LOKA <=> Select Store Sora",
+    "slack_channel_id": "C0B5K3XCREW",
+    "slack_channel_name": "#cl-2c-select_store_sora",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "de831c71-614f-42b3-9556-74d6393989a4",
+    "telegram_group_id": -5212129119,
+    "telegram_group_name": "Angkor Market <=> LOKA",
+    "slack_channel_id": "C0B31BZA2P9",
+    "slack_channel_name": "#cl-2c-angkor_market",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "c550fde9-7610-4f30-84e5-60795de4811e",
+    "telegram_group_id": -5228001920,
+    "telegram_group_name": "LOKA & Yakiniku Like",
+    "slack_channel_id": "C0775NSR0P8",
+    "slack_channel_name": "#cl-2b-potential_yakiniku_like",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "f08fdac8-2446-49c0-ac38-eb3ce48bb21e",
+    "telegram_group_id": -5251975015,
+    "telegram_group_name": "LOKA Supplier & Riverlight Koh Norea",
+    "slack_channel_id": "C0B3VFB7HPV",
+    "slack_channel_name": "#cl-2b-riverlight_kohnorea",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "085435e5-e8d6-4b23-b7c5-516a29bee7d2",
+    "telegram_group_id": -5158722103,
+    "telegram_group_name": "Fat Boy Yakiyori ⇄ LOKA",
+    "slack_channel_id": "C0B05FC9VV2",
+    "slack_channel_name": "#cl-2b_fatboyyakiyori_under_approaching",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "d5815b14-4ce5-4813-ab7e-e587d22730ff",
+    "telegram_group_id": -5138290461,
+    "telegram_group_name": "LOKA=> PP Japanese Shop",
+    "slack_channel_id": "C0B6G5Z28RX",
+    "slack_channel_name": "#cl-2c-pp-japanese-shop",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "82474966-42b4-4d4b-b882-c6229c4c764c",
+    "telegram_group_id": -5061441052,
+    "telegram_group_name": "Loka Order Rice & Mr. Tech Leang",
+    "slack_channel_id": "C08CWSG06CQ",
+    "slack_channel_name": "#cl-gc-bongtechleang",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "d0b2e8a8-decc-4514-822b-ab48aa1eb985",
+    "telegram_group_id": -1003814235455,
+    "telegram_group_name": "LOKA <=> Tabeyoo",
+    "slack_channel_id": "C0ARE6SBAS1",
+    "slack_channel_name": "#cl-2b-tabeyoo",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "342f39ca-3dce-432d-b40c-c3af251f2635",
+    "telegram_group_id": -1003699876271,
+    "telegram_group_name": "LOKA Japanese Supply & Sorryy Cafe TK",
+    "slack_channel_id": "C0AL0M4ACAD",
+    "slack_channel_name": "#cl-2b-sorryy_cafe",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "12e0f257-728c-4d39-b58a-f167a9b23d94",
+    "telegram_group_id": -4541923726,
+    "telegram_group_name": "Seorae Aoen 1 — Loka",
+    "slack_channel_id": "C07J6U890Q1",
+    "slack_channel_name": "#cl-2b-elite_food",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "8bbca1b5-fe76-4743-b3e1-d2a608f1ccd2",
+    "telegram_group_id": -4862196025,
+    "telegram_group_name": "LOKA JAPANESE FOOD & Motor Cafe",
+    "slack_channel_id": "C0920LAF2J0",
+    "slack_channel_name": "#cl-2b-motor_cafe",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "76adf516-8f5d-4808-8d2b-0690e1a9b294",
+    "telegram_group_id": -5015397753,
+    "telegram_group_name": "LOKA Supplier & Melia Whiskey Bar",
+    "slack_channel_id": "C0A0M3N1YH3",
+    "slack_channel_name": "#cl-2b-melia_whisky_bar",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "401738ff-b27c-4fd5-ada8-07053124739b",
+    "telegram_group_id": -4712636164,
+    "telegram_group_name": "LOKA <=> Sora Sushi",
+    "slack_channel_id": "C085XGT0X0F",
+    "slack_channel_name": "#cl-2b-sora_sushi",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "6c04acbe-53a6-4001-b67d-6850c9d32283",
+    "telegram_group_id": -4938033906,
+    "telegram_group_name": "LOKA <=> Tastelab",
+    "slack_channel_id": "C05SWKTDVQS",
+    "slack_channel_name": "#cl-2b-tastelab",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "b1f903cf-a2de-4993-a8c1-e46e68a4fee6",
+    "telegram_group_id": -4163607326,
+    "telegram_group_name": "Oyakata sama <=> LOKA",
+    "slack_channel_id": "C06LZTXNMN3",
+    "slack_channel_name": "#cl-2b-oyakata",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "b0c245f7-6deb-44db-aa4b-df544da7a123",
+    "telegram_group_id": -1002597311008,
+    "telegram_group_name": "Loka FF Group",
+    "slack_channel_id": "CMHTUL2JX",
+    "slack_channel_name": "#loka-ff_general",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "0eb17fdc-6b8e-44bd-bbe6-b8a8d64f432c",
+    "telegram_group_id": -5048364567,
+    "telegram_group_name": "Sophorn Agro Farm <=> S.E.A.T.S Farm",
+    "slack_channel_id": "C0B7R5F4FPS",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh_sophorn-agro-farm",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "d1958192-f96f-4a5b-826e-95c2b8c77450",
+    "telegram_group_id": -4915222448,
+    "telegram_group_name": "The Greendogs <=> Loka",
+    "slack_channel_id": "C09US2Z0ULR",
+    "slack_channel_name": "#cl-2b_the_greendogs",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "5c667727-2b89-4216-b87d-cbdd67d3c17c",
+    "telegram_group_id": -4751135148,
+    "telegram_group_name": "LOKA <=> Paris Baguttee",
+    "slack_channel_id": "C09SXNMV458",
+    "slack_channel_name": "#cl-2b-paris_baguette",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "6e8ddd9f-3b09-4f2d-b611-f50b855918c4",
+    "telegram_group_id": -5263988181,
+    "telegram_group_name": "Mekhala café X LOKA",
+    "slack_channel_id": "C0A9AFYPE1G",
+    "slack_channel_name": "#cl-2b-mmekhala_cafe_eatery",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "477ca8db-f5f3-4978-898b-ca824cba406e",
+    "telegram_group_id": -5548318047,
+    "telegram_group_name": "Nori Handroll & LOKA",
+    "slack_channel_id": "C0BDGNXPRE1",
+    "slack_channel_name": "#cl-2b-nori_handroll",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "b1b08459-55f2-48ab-98d1-19d6940029a4",
+    "telegram_group_id": -1002735013387,
+    "telegram_group_name": "AKARA / JETRO PJT",
+    "slack_channel_id": "C01D3Q3906S",
+    "slack_channel_name": "#pj-jetro",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "f4675b5d-788a-4a2b-98e0-58f2f0dc65ad",
+    "telegram_group_id": -1003970214620,
+    "telegram_group_name": "Loka Import",
+    "slack_channel_id": "C0BV61MB24Q",
+    "slack_channel_name": "#cl-2b-ms_moly",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "74cfc69b-6536-4276-9197-12265750cc81",
+    "telegram_group_id": -5242612405,
+    "telegram_group_name": "LOKA & Kobe President",
+    "slack_channel_id": "C01A5H92RAP",
+    "slack_channel_name": "#cl-2b-kobe",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "be0175a4-4338-41d1-9d59-3355ff7763dd",
+    "telegram_group_id": -5157959078,
+    "telegram_group_name": "ELAN Society X LOKA",
+    "slack_channel_id": "C0BHK362VB6",
+    "slack_channel_name": "#cl-2b-elan_society-underapproach",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "c1c07c49-1d35-4375-bbda-7bc7ed9cda96",
+    "telegram_group_id": -4813228834,
+    "telegram_group_name": "JP Recruiting Dev. PJT",
+    "slack_channel_id": "C03SU6XMWA3",
+    "slack_channel_name": "#seats-hr_recruiting_jp",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "23a1c7d2-28f2-4c25-b568-f5e28ec3aa78",
+    "telegram_group_id": -4878013218,
+    "telegram_group_name": "LOKA<=>Chez Shige",
+    "slack_channel_id": "C08KBNGSNT1",
+    "slack_channel_name": "#cl-2b-chez_shige",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "4db8f3bd-6827-42c0-b324-6bf37f330af8",
+    "telegram_group_id": -5420716507,
+    "telegram_group_name": "ざこば ⇔ LOKA",
+    "slack_channel_id": "C0C1DR69D2B",
+    "slack_channel_name": "#cl-2b-zakoba",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "947135fb-fe3f-44d2-8539-dc6b7acc317a",
+    "telegram_group_id": -5512674752,
+    "telegram_group_name": "Tanaka Izakaya <=> LOKA",
+    "slack_channel_id": "C0C3E5AFZPZ",
+    "slack_channel_name": "#cl-2b-tanaka_izakaya_potential",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "ddad64c4-ae3a-4515-b99a-26c982956682",
+    "telegram_group_id": -5335118173,
+    "telegram_group_name": "Makro ⇄ LOKA | Dry Food / Grocery / Japanese Grocery / Ambient Food",
+    "slack_channel_id": "C018JH6PAM9",
+    "slack_channel_name": "#cl-2c-makro",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "1a798f0b-1289-4863-826e-5d2294ddb80d",
+    "telegram_group_id": -1002567335551,
+    "telegram_group_name": "Makro ⇄ LOKA | fresh/frozen Seafood",
+    "slack_channel_id": "C018JH6PAM9",
+    "slack_channel_name": "#cl-2c-makro",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "4166f4f8-25e2-4c6f-a96a-3f917bb54326",
+    "telegram_group_id": -1004303697273,
+    "telegram_group_name": "S.E.A.T.S Farm Product Development team",
+    "slack_channel_id": "C07N3SK4SMU",
+    "slack_channel_name": "#seatsfarm-product_development",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "0a9410a5-5d58-4beb-b18a-08555813f64e",
+    "telegram_group_id": -5302129752,
+    "telegram_group_name": "LOKA <=> Osaka Sushi & Bento",
+    "slack_channel_id": "C0CALG7GS48",
+    "slack_channel_name": "#cl-2b-osaka_sushi_bento",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "98127e16-25d8-4bbd-8c96-5d33539034ff",
+    "telegram_group_id": -5386990036,
+    "telegram_group_name": "Express x S.E.A.T.S",
+    "slack_channel_id": "C0CANT1P0AV",
+    "slack_channel_name": "#cl-2b-musashi_express",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "f44040f7-bd06-4880-8959-fa3711e31187",
+    "telegram_group_id": -4747762089,
+    "telegram_group_name": "Fungi Art × S.E.A.T.S Farm",
+    "slack_channel_id": "C0865S20T8V",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh-fungi_art",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "a441fba0-d719-4100-b383-f5b926d7c98a",
+    "telegram_group_id": -891460452,
+    "telegram_group_name": "C-TRA ⇔ S.E.A.T.S Inc",
+    "slack_channel_id": "C09CPSWDLMR",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh-c_tra",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "e142559c-d5e7-4b3a-a341-9fbafddcfaaa",
+    "telegram_group_id": -1004304782262,
+    "telegram_group_name": "Seats farm - Vann Vann បន្លែលើទឹក",
+    "slack_channel_id": "C0C1S7CJX7Z",
+    "slack_channel_name": "#seatfsfarm-op-supplier-kh-vann-vann_farm",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "5b668621-4a0d-4e0e-97f7-1d5dc4b9c316",
+    "telegram_group_id": -1004389023671,
+    "telegram_group_name": "PBC farm-Seats Farm",
+    "slack_channel_id": "C0BRZMLKP8Q",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh-pacific_bio_canaan_farm",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "a5a968a1-3e16-4f20-a868-ae593b595480",
+    "telegram_group_id": -5483869593,
+    "telegram_group_name": "Chamroeun Farm - Seats Farm",
+    "slack_channel_id": "C0B7R5F4FPS",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh-chamroeun_farm",
+    "thread_mode": "daily",
+    "enabled": true
+  },
+  {
+    "id": "f0094255-2fda-446d-8b04-d9788bc630bf",
+    "telegram_group_id": -1003980647426,
+    "telegram_group_name": "SELECT STORE SORA",
+    "slack_channel_id": "C0A1S1Z1U3C",
+    "slack_channel_name": "#pisa-sales_progress",
+    "thread_mode": "daily",
+    "enabled": true
+  }
+]
