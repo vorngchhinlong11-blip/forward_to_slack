@@ -1,329 +1,320 @@
-# Telegram to Slack 転送ツール
+# Telegram to Slack Forwarder
 
-TelegramグループのメッセージをSlackチャンネルに自動転送するツールです。
+A tool that automatically forwards messages from Telegram groups to Slack channels.
 
-## 主な機能
+## Features
 
-- Telegramグループのメッセージをリアルタイムで監視し、Slackに転送
-- GUI操作で簡単にグループを追加・管理
-- **GUI で Telegram 認証コード入力が可能**
-- **Telegram グループ・Slack チャンネルの検索機能**
-- スレッド管理機能（日ごと、週ごと、スレッドなし）
-- **メディアファイル（写真・動画など）を Slack に自動アップロード**
-- PC のタイムゾーンを自動判定してスレッド振り分け
-- 外部ユーザーを含むTelegramグループにも対応
-- 複数のグループを同時に監視可能
-- Windows/macOS/Linux 対応
+- Monitors Telegram groups in real time and forwards messages to Slack
+- Add and manage groups easily through the GUI
+- **Enter your Telegram verification code directly in the GUI**
+- **Search Telegram groups and Slack channels when adding a group**
+- **Search the registered groups list by group or channel name**
+- Thread management (daily, weekly, or no threads)
+- **Automatically uploads media files (photos, videos, etc.) to Slack**
+- Detects your PC's time zone automatically to sort messages into threads
+- Works with Telegram groups that include external users
+- Monitors multiple groups at the same time
+- Supports Windows, macOS and Linux
 
-## システム要件
+## Requirements
 
-- Python 3.9 以上
-- Telegram アカウント
-- Slack ワークスペース（管理者権限または Bot 作成権限）
+- Python 3.9 or later
+- A Telegram account
+- A Slack workspace (admin rights, or permission to create a bot)
 
-## セットアップ
+## Setup
 
-### 1. Telegram API キーの取得
+### 1. Get Telegram API keys
 
-1. https://my.telegram.org にアクセス
-2. ログイン後、「API development tools」を選択
-3. アプリケーション情報を入力して、API ID と API Hash を取得
+1. Go to https://my.telegram.org
+2. Log in and select "API development tools"
+3. Fill in the application details to get your API ID and API Hash
 
-### 2. Slack App の作成と Bot Token の取得
+### 2. Create a Slack app and get a bot token
 
-#### 2.1 Slack App の作成
+#### 2.1 Create the Slack app
 
-1. https://api.slack.com/apps にアクセス
-2. 「Create New App」をクリック
-3. 「From scratch」を選択
-4. App 名を入力（例: Telegram Forwarder）し、ワークスペースを選択
+1. Go to https://api.slack.com/apps
+2. Click "Create New App"
+3. Select "From scratch"
+4. Enter an app name (e.g. Telegram Forwarder) and choose your workspace
 
-#### 2.2 Bot Token Scopes の設定
+#### 2.2 Set the bot token scopes
 
-1. 左メニューから「OAuth & Permissions」を選択
-2. 「Scopes」セクションの「Bot Token Scopes」で以下を追加：
-   - `chat:write` - メッセージを投稿
-   - `channels:read` - パブリックチャンネル情報を取得
-   - `groups:read` - プライベートチャンネル情報を取得
-   - `files:write` - ファイルをアップロード（重要）
+1. Select "OAuth & Permissions" in the left menu
+2. Under "Scopes" → "Bot Token Scopes", add:
+   - `chat:write` - post messages
+   - `channels:read` - read public channel info
+   - `groups:read` - read private channel info
+   - `files:write` - upload files (required for media)
 
-#### 2.3 Bot のインストール
+#### 2.3 Install the bot
 
-1. 「OAuth & Permissions」ページ上部の「Install to Workspace」をクリック
-2. 権限を確認して「許可する」
-3. 表示される「Bot User OAuth Token」（`xoxb-`で始まる）をコピー
+1. Click "Install to Workspace" at the top of the "OAuth & Permissions" page
+2. Review the permissions and click "Allow"
+3. Copy the "Bot User OAuth Token" (it starts with `xoxb-`)
 
-#### 2.4 Bot をチャンネルに追加
+#### 2.4 Add the bot to channels
 
-転送先のSlackチャンネルで：
+In each Slack channel you want to forward to:
 ```
-/invite @アプリ名
+/invite @your-app-name
 ```
 
-## 使い方
+## Usage
 
-### アプリケーションの起動
+### Starting the app
 
-**初回起動時は自動的にセットアップが実行されます。**
+**On first launch, setup runs automatically.**
 
-#### Windows の場合
+#### Windows
 
 ```cmd
 run_windows.bat
 ```
 
-起動スクリプトが自動的に以下を実行します：
-- 仮想環境が存在しない場合は自動作成
-- 依存パッケージのインストール
-- requirements.txt のバージョンとインストール済みパッケージを照合し、必要に応じて更新
-- アプリケーションの起動
-
-#### macOS/Linux の場合
+#### macOS / Linux
 
 ```bash
 ./run_mac.sh
 ```
 
-起動スクリプトが自動的に以下を実行します：
-- 仮想環境が存在しない場合は自動作成
-- 依存パッケージのインストール
-- requirements.txt のバージョンとインストール済みパッケージを照合し、必要に応じて更新
-- アプリケーションの起動
+The start script automatically:
+- Creates a virtual environment if one doesn't exist
+- Installs the dependencies
+- Checks installed packages against `requirements.txt` and updates them if needed
+- Starts the app
 
-### 初回設定
+### First-time configuration
 
-#### 1. Telegram 設定
+#### 1. Telegram settings
 
-1. アプリケーション起動後、「Telegram設定」ボタンをクリック
-2. 以下を入力：
+1. Click the "Telegram Settings" button
+2. Enter:
    - API ID
    - API Hash
-   - 電話番号（国際形式: +81XXXXXXXXXX）
-3. 「保存」をクリック
-4. **自動的に接続検証が開始されます**
-5. 初回の場合、**GUI で認証コード入力ダイアログが表示されます**
-6. Telegram アプリまたは SMS で受け取った認証コードを入力
-7. 2段階認証が有効な場合、パスワードも入力
-8. 「接続成功」と表示されれば完了
+   - Phone number (international format, e.g. +81XXXXXXXXXX)
+3. Click "Save"
+4. **The connection check starts automatically**
+5. On first connection, **a verification code dialog appears in the GUI**
+6. Enter the code you received in the Telegram app or by SMS
+7. If two-step verification is enabled, enter your password too
+8. You're done when the "Connected" message appears
 
-#### 2. Slack 設定
+#### 2. Slack settings
 
-1. 「Slack設定」ボタンをクリック
-2. Bot Token を入力
-3. 「保存」をクリック
+1. Click the "Slack Settings" button
+2. Enter your bot token
+3. Click "Save"
 
-### グループの追加
+### Adding a group
 
-1. 「グループを追加」ボタンをクリック
-2. Telegram グループを選択
-   - 参加しているグループが自動的に表示されます
-   - 初回の場合、認証コード入力が求められることがあります（GUI で入力）
-   - **検索ボックスでグループ名をフィルタリング可能**
-3. Slack チャンネルを選択
-   - Bot が追加されているチャンネルから選択
-   - **検索ボックスでチャンネル名をフィルタリング可能**
-4. スレッドモードを選択
-   - **日ごと**: 毎日新しいスレッドを作成（推奨）
-   - **週ごと**: 毎週新しいスレッドを作成
-   - **スレッドなし**: 各メッセージを個別に投稿
-5. 「保存」をクリック
+1. Click the "Add Group" button
+2. Select a Telegram group
+   - Groups you're a member of are listed automatically
+   - On first use you may be asked for a verification code (enter it in the GUI)
+   - **Use the search box to filter by group name**
+3. Select a Slack channel
+   - Choose from the channels the bot has been added to
+   - **Use the search box to filter by channel name**
+4. Choose a thread mode
+   - **Daily**: a new thread every day (recommended)
+   - **Weekly**: a new thread every week
+   - **No Thread**: each message is posted on its own
+5. Click "Save"
 
-### 転送の開始
+### Finding a registered group
 
-1. グループを追加したら、「転送開始」ボタンをクリック
-2. ステータスが「転送中」になれば、メッセージの転送が開始されます
-3. Telegram のメッセージが Slack に自動的に転送されます
+Type in the "Search groups / channels" box next to the "Registered Groups" heading. The list filters as you type, matching the Telegram group name or the Slack channel name (case-insensitive). Click ✕ to clear the search.
 
-### グループの編集・削除
+### Starting forwarding
 
-- 編集: グループカードの「✏️」アイコンをクリック
-- 削除: グループカードの「🗑️」アイコンをクリック
-- 有効/無効: 編集画面でスイッチを切り替え
+1. After adding your groups, click "Start Forwarding"
+2. When the status changes to "Forwarding", messages are being forwarded
+3. New Telegram messages are posted to Slack automatically
 
-## スレッド管理について
+### Editing and deleting groups
 
-Telegramは短文メッセージが多いため、Slack側でスレッド管理を行うことで見やすく整理できます：
+- Edit: click the ✏️ icon on a group card
+- Delete: click the 🗑️ icon on a group card
+- Enable / disable: toggle the "Enabled" switch in the edit dialog
 
-- **日ごと**: 1日1つのスレッドに全メッセージをまとめる（推奨）
-  - 例: "📱 Telegram - 2025年11月28日" というスレッドに、その日のメッセージをまとめる
-- **週ごと**: 1週間1つのスレッドにまとめる
-- **スレッドなし**: 各メッセージを個別に投稿（Slackが混雑する可能性あり）
+## About threads
 
-スレッド情報は `data/thread_cache.json` に自動的にキャッシュされ、アプリを再起動しても同じスレッドに投稿を続けます。
+Telegram tends to have many short messages, so grouping them into Slack threads keeps channels tidy:
 
-**タイムゾーン**: PC のシステム設定を自動的に読み取り、ローカル時間でスレッドを振り分けます（日本なら JST、アメリカなら PST/EST など）。
+- **Daily**: all of a day's messages go into one thread (recommended)
+  - e.g. a thread titled ":telegram: Group name - 2026-11-12" holds that day's messages
+- **Weekly**: all of a week's messages go into one thread
+  - e.g. ":telegram: Group name - Week of 2026-11-09"
+- **No Thread**: each message is posted separately (can make Slack busy)
 
-## メディアファイル（写真・動画など）の扱い
+Thread information is cached in `data/thread_cache.json`, so the app keeps posting to the same thread after a restart.
 
-メディアファイルは **Slack に直接アップロード**されます。
+**Time zone**: the app reads your PC's system settings and sorts messages into threads by local time (e.g. JST in Japan, ICT in Cambodia, PST/EST in the US).
 
-### 対応ファイル
+## Media files (photos, videos, etc.)
 
-- 📷 写真（JPEG、PNG など）
-- 🎥 動画（MP4、MOV など）
-- 📄 ドキュメント（PDF、Word、Excel など）
-- 🎵 音声ファイル
-- 🎤 ボイスメッセージ
-- その他すべてのメディアタイプ
+Media files are **uploaded directly to Slack**.
 
-### 動作
+### Supported files
 
-1. Telegram からファイルをダウンロード（一時フォルダ `downloads/`）
-2. Slack にアップロード
-3. 一時ファイルを自動削除
+- 📷 Photos (JPEG, PNG, etc.)
+- 🎥 Videos (MP4, MOV, etc.)
+- 📄 Documents (PDF, Word, Excel, etc.)
+- 🎵 Audio files
+- 🎤 Voice messages
+- All other media types
 
-### メリット
+### How it works
 
-- ✅ Slack で直接閲覧・ダウンロード可能
-- ✅ Telegram アカウント不要で閲覧できる
-- ✅ すべてのメディアタイプに対応
+1. The file is downloaded from Telegram into the temporary `downloads/` folder
+2. It is uploaded to Slack
+3. The temporary file is deleted automatically
 
-### Slack のストレージ制限
+### Benefits
 
-- **1ファイルあたり**: 最大 1GB
-- **無料プラン合計**: 5GB まで
-- **メッセージ・ファイル履歴**: 90日間
+- ✅ View and download files directly in Slack
+- ✅ No Telegram account needed to view them
+- ✅ Works with every media type
 
-大量のファイルを転送する場合、ストレージ容量に注意してください。
+### Slack storage limits
 
-## 注意事項
+- **Per file**: up to 1GB
+- **Free plan total**: up to 5GB
+- **Message and file history**: 90 days
 
-### Telegram側の制約
+Keep an eye on storage if you forward a lot of files.
 
-- このツールは**ユーザーアカウント**としてTelegramに接続します
-- Bot APIではなくMTProto APIを使用するため、外部ユーザーを含むグループでも動作します
-- ただし、Telegram の利用規約を遵守してください
-- スパム行為や大量のメッセージ送信は避けてください
+## Notes
 
-### Slack側の制約
+### Telegram
 
-- Bot には適切な権限（Scopes）が必要です
-- Bot が参加していないチャンネルには投稿できません
-- レート制限に注意（通常の業務用途では問題ありません）
+- This tool connects to Telegram as **your user account**
+- It uses the MTProto API rather than the Bot API, so it works in groups with external users
+- Please follow Telegram's Terms of Service
+- Avoid spam or sending large volumes of messages
 
-### セキュリティ
+### Slack
 
-- API キーや Token は厳重に管理してください
-- `data/config.json` には認証情報が含まれるため、Git にコミットしないでください
-- `.gitignore` に設定済み
-- `telegram_session.session` も同様に管理してください
+- The bot needs the correct scopes
+- The bot can't post to channels it hasn't been added to
+- Watch out for rate limits (normal business use is fine)
 
-## トラブルシューティング
+### Security
 
-### Telegramに接続できない
+- Keep your API keys and tokens safe
+- `data/config.json` contains your credentials — never commit it to Git
+- `telegram_session.session` is a logged-in Telegram session — treat it like a password and never commit it either
+- Both are already excluded in `.gitignore`
 
-- API ID、API Hash、電話番号が正しいか確認
-- GUI で認証コード入力ダイアログが表示されない場合、アプリを再起動
-- ファイアウォールやプロキシ設定を確認
+## Troubleshooting
 
-### Slackに投稿できない
+### Can't connect to Telegram
 
-- Bot Token が正しいか確認
-- Bot に必要な Scopes が設定されているか確認
-- Bot がチャンネルに追加されているか確認（`/invite @bot名`）
-- エラーメッセージ `not_in_channel` が出る場合は Bot をチャンネルに追加
+- Check that your API ID, API Hash and phone number are correct
+- If the verification code dialog doesn't appear in the GUI, restart the app
+- Check your firewall and proxy settings
 
-### グループが表示されない
+### Can't post to Slack
 
-- Telegram でそのグループに参加しているか確認
-- グループではなく個人チャットの可能性（個人チャットは非対応）
-- 認証コードの入力を求められた場合は、GUI で入力
+- Check that the bot token is correct
+- Check that the bot has the required scopes
+- Check that the bot has been added to the channel (`/invite @bot-name`)
+- If you see a `not_in_channel` error, add the bot to the channel
 
-### SSL証明書エラー（macOS）
+### A group doesn't appear
 
-- `pip install --upgrade certifi` を実行
-- それでも解決しない場合は、コード内で SSL 証明書を設定済み
+- Check that you're a member of the group in Telegram
+- It may be a private chat rather than a group (private chats aren't supported)
+- If asked for a verification code, enter it in the GUI
 
-### Windowsでメッセージ転送エラーが発生する
+### SSL certificate error (macOS)
 
-エラーメッセージ例：
-```
-メッセージ転送エラー: 'locale' codec can't encode character '\u5e74' in position 2: encoding error
-```
+- Run `pip install --upgrade certifi`
+- If that doesn't fix it, note that SSL certificates are already configured in the code
 
-このエラーは Windows のロケール（文字コード）設定に起因します。
+### Encoding errors on Windows
 
-**解決方法1: UTF-8サポートを有効にする（推奨）**
+If you see errors like `'charmap' codec can't encode character` or `'locale' codec can't encode character`, Windows is using a non-UTF-8 code page. These usually happen when the app is started some other way than `run_windows.bat` (which switches the console to UTF-8).
 
-1. **設定** → **時刻と言語** → **言語と地域** → **管理用の言語の設定**
-2. 「**システム ロケールの変更**」をクリック
-3. 「**ベータ: ワールドワイド言語サポートでUnicode UTF-8を使用**」にチェックを入れる
-4. PCを再起動
+**Fix 1: start the app with `run_windows.bat` (recommended)**
 
-**解決方法2: 最新版のアプリケーションを使用する**
+**Fix 2: enable UTF-8 support in Windows**
 
-v1.1.0以降では、この問題は修正済みです。最新版をダウンロードしてください。
+1. **Settings** → **Time & language** → **Language & region** → **Administrative language settings**
+2. Click "**Change system locale**"
+3. Check "**Beta: Use Unicode UTF-8 for worldwide language support**"
+4. Restart your PC
 
-## ファイル構成
+## Project structure
 
 ```
-TelegramToSlack/
-├── gui.py                    # Flet GUI（エントリーポイント）
-├── config.py                 # 設定管理
-├── telegram_handler.py       # Telegram API連携
-├── slack_handler.py          # Slack API連携
-├── message_forwarder.py      # メッセージ転送ロジック
-├── run_windows.bat           # Windows起動スクリプト（セットアップ統合）
-├── run_mac.sh                # macOS/Linux起動スクリプト（セットアップ統合）
-├── requirements.txt          # 依存パッケージ（バージョン固定）
-├── .gitignore                # Git除外設定
-├── data/
-│   ├── config.json           # グループ設定（自動生成）
-│   └── thread_cache.json     # スレッドキャッシュ（自動生成）
-├── downloads/                # 一時ファイル保存先（自動生成・自動削除）
-├── venv/                     # Python仮想環境（自動生成）
-├── telegram_session.session  # Telegram認証情報（自動生成）
-└── README.md                 # このファイル
+forward_to_slack/
+├── gui.py                    # Flet GUI (entry point)
+├── config.py                 # Settings management
+├── telegram_handler.py       # Telegram API integration
+├── slack_handler.py          # Slack API integration
+├── message_forwarder.py      # Forwarding logic
+├── run_windows.bat           # Windows start script (includes setup)
+├── run_mac.sh                # macOS/Linux start script (includes setup)
+├── requirements.txt          # Dependencies (pinned versions)
+├── .gitignore                # Git exclusions
+├── data/                     # Created automatically, not in Git
+│   ├── config.json           # Credentials and group settings
+│   └── thread_cache.json     # Thread cache
+├── downloads/                # Temporary media files (auto-created and auto-deleted)
+├── venv/                     # Python virtual environment (auto-created)
+├── telegram_session.session  # Telegram login session (auto-created, not in Git)
+└── README.md                 # This file
 ```
 
-## 技術仕様
+## Technical details
 
-### 依存パッケージ
+### Dependencies
 
-- **Telethon 1.42.0** - Telegram MTProto API クライアント
-- **slack-sdk 3.39.0** - Slack Web API クライアント
-- **flet 0.28.3** - クロスプラットフォーム GUI フレームワーク
-- **python-dotenv 1.2.1** - 環境変数管理
-- **aiofiles 25.1.0** - 非同期ファイル操作
+- **Telethon 1.42.0** - Telegram MTProto API client
+- **slack-sdk 3.39.0** - Slack Web API client
+- **flet 0.28.3** - Cross-platform GUI framework
+- **python-dotenv 1.2.1** - Environment variable management
+- **aiofiles 25.1.0** - Async file operations
 
-### 自動バージョン管理
+### Automatic version management
 
-起動スクリプト（`run.sh` / `run.bat`）は以下の機能を持ちます：
+The start scripts (`run_windows.bat` / `run_mac.sh`):
 
-- 仮想環境の自動作成（初回のみ）
-- requirements.txt との自動バージョン照合
-- バージョン不一致時の自動更新
-- 依存関係の自動解決
+- Create the virtual environment automatically (first run only)
+- Check installed packages against `requirements.txt`
+- Update packages automatically when versions don't match
+- Resolve dependencies automatically
 
-### ファイルサイズ制限
+### File size limit
 
-- Slack アップロード上限: 1GB/ファイル
-- 1GB を超えるファイルは警告メッセージのみ投稿され、アップロードはスキップされます
+- Slack upload limit: 1GB per file
+- For files over 1GB, only a warning message is posted and the upload is skipped
 
-## サポート
+## Support
 
-問題が発生した場合は、以下を確認してください：
+If something goes wrong, check:
 
-1. Python のバージョン（3.9以上）
-2. `run.sh` または `run.bat` で起動しているか
-3. API キーと Token が正しいか
-4. ファイアウォールやネットワーク設定
-5. Slack Bot がチャンネルに追加されているか（`/invite @bot名`）
+1. Your Python version (3.9 or later)
+2. That you started the app with `run_windows.bat` or `run_mac.sh`
+3. That your API keys and token are correct
+4. Your firewall and network settings
+5. That the Slack bot has been added to the channel (`/invite @bot-name`)
 
-### よくある質問
+### FAQ
 
-**Q: 仮想環境を削除してしまった**
-A: `run.sh` または `run.bat` を実行すると自動的に再作成されます。
+**Q: I deleted the virtual environment.**
+A: Run `run_windows.bat` or `run_mac.sh` and it will be recreated automatically.
 
-**Q: パッケージのバージョンを変更したい**
-A: `requirements.txt` を編集後、次回起動時に自動的に同期されます。
+**Q: I want to change a package version.**
+A: Edit `requirements.txt`; it will be synced automatically on the next launch.
 
-**Q: 起動が遅い**
-A: 初回起動時やパッケージ更新時は時間がかかります。2回目以降は高速に起動します。
+**Q: Startup is slow.**
+A: The first launch and package updates take a while. Later launches are fast.
 
 ---
 
-作成日: 2025年
-最終更新: 2026年1月3日（Windows ロケールエラー修正）
-#   f o r w a r d _ t o _ s l a c k  
- 
+Created: 2025
+Last updated: 2026-11-12 (English translation, registered-group search)
