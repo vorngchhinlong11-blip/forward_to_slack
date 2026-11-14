@@ -98,6 +98,20 @@ class Config:
         }
         self.save_config()
 
+    # Status alerts (Telegram bot + heartbeat) - stored in data/config.json
+    def get_notify_config(self) -> Dict:
+        """Get alert settings"""
+        return self.config_data.get("notify", {})
+
+    def set_notify_config(self, bot_token: str, chat_id: str, heartbeat_url: str = ""):
+        """Save alert settings"""
+        self.config_data["notify"] = {
+            "bot_token": bot_token.strip(),
+            "chat_id": chat_id.strip(),
+            "heartbeat_url": heartbeat_url.strip(),
+        }
+        self.save_config()
+
     # Group management
     def get_groups(self) -> List[Dict]:
         """Get all group settings"""
@@ -105,8 +119,10 @@ class Config:
 
     def add_group(self, telegram_group_id: int, telegram_group_name: str,
                   slack_channel_id: str, slack_channel_name: str,
-                  thread_mode: str = "daily") -> str:
-        """Add a new group"""
+                  thread_mode: str = "daily",
+                  telegram_topic_id: Optional[int] = None,
+                  telegram_topic_name: Optional[str] = None) -> str:
+        """Add a new group (optionally limited to one forum topic)"""
         import uuid
         group_id = str(uuid.uuid4())
 
@@ -119,10 +135,14 @@ class Config:
             "thread_mode": thread_mode,
             "enabled": True
         }
+        if telegram_topic_id is not None:
+            new_group["telegram_topic_id"] = telegram_topic_id
+            new_group["telegram_topic_name"] = telegram_topic_name
 
         self.config_data["groups"].append(new_group)
         self.save_config()
-        self._notify_groups_changed(f"added {telegram_group_name} -> {slack_channel_name}")
+        source = telegram_group_name + (f" / {telegram_topic_name}" if telegram_topic_id is not None else "")
+        self._notify_groups_changed(f"added {source} -> {slack_channel_name}")
         return group_id
 
     def update_group(self, group_id: str, **kwargs):
@@ -130,6 +150,10 @@ class Config:
         for group in self.config_data["groups"]:
             if group["id"] == group_id:
                 group.update(kwargs)
+                # "All topics": drop the topic keys instead of storing nulls
+                if "telegram_topic_id" in kwargs and kwargs["telegram_topic_id"] is None:
+                    group.pop("telegram_topic_id", None)
+                    group.pop("telegram_topic_name", None)
                 self.save_config()
                 self._notify_groups_changed(f"edited {group.get('telegram_group_name', group_id)}")
                 return True

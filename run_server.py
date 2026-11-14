@@ -17,6 +17,7 @@ from telethon import TelegramClient
 
 from config import Config
 from message_forwarder import MessageForwarder
+from notifier import Notifier
 from slack_handler import SlackHandler
 
 # Exit code used when Telegram is not logged in. The systemd service is told
@@ -80,16 +81,26 @@ async def serve(config: Config) -> int:
     enabled = [g for g in config.get_groups() if g.get("enabled")]
     print(f"Starting forwarder for {len(enabled)} enabled group(s)", flush=True)
 
+    notifier = Notifier(config.get_notify_config)
     forwarder = MessageForwarder(config)
     try:
-        await forwarder.run()
+        await forwarder.start()
+        notifier.send(f"✅ Forwarding started on the server ({len(enabled)} groups)")
+        notifier.start_heartbeat(lambda: forwarder.telegram_handler.client.is_connected())
+        await forwarder.telegram_handler.run_until_disconnected()
+    except Exception as e:
+        notifier.send(f"❌ Server forwarding stopped because of an error:\n{e}\n"
+                      "The service will restart automatically.", wait=True)
+        raise
     finally:
+        notifier.stop_heartbeat()
         if forwarder.is_running:
             await forwarder.stop()
 
     # run_until_disconnected() returned: connection lost. Exit non-zero so
     # systemd restarts the service with a fresh connection.
     print("Disconnected from Telegram - exiting so the service restarts", flush=True)
+    notifier.send("⚠️ Server lost the connection to Telegram - restarting automatically.", wait=True)
     return 1
 
 

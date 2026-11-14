@@ -3,6 +3,16 @@ import asyncio
 import os
 from config import Config
 from git_backup import GitBackup
+from notifier import Notifier, find_chat_id
+import sys
+import time
+
+RECONNECT_DELAY = 30  # seconds between reconnect attempts after a lost connection
+
+# Exit codes understood by run_windows.bat
+EXIT_UNEXPECTED = 3        # closed without the user closing the window -> restart
+EXIT_ALREADY_RUNNING = 10  # another copy is running -> don't restart
+APP_STATE = {"user_closed": False}
 from message_forwarder import MessageForwarder
 
 class TelegramToSlackGUI:
@@ -17,6 +27,8 @@ class TelegramToSlackGUI:
         self.page.scroll = ft.ScrollMode.AUTO
 
         self.config = Config()
+        self.notifier = Notifier(self.config.get_notify_config)
+        self._stop_requested = False
 
         # Back up groups.json to GitHub automatically whenever groups change
         self.git_backup = GitBackup(
@@ -51,6 +63,7 @@ class TelegramToSlackGUI:
         )
 
         self._build_ui()
+        self._maybe_resume_forwarding()
 
     def _build_ui(self):
         """Build the UI"""
@@ -101,7 +114,12 @@ class TelegramToSlackGUI:
                 icon=ft.Icons.SETTINGS,
                 on_click=self._show_slack_settings
             ),
-        ], spacing=10)
+            ft.ElevatedButton(
+                "Alerts",
+                icon=ft.Icons.NOTIFICATIONS,
+                on_click=self._show_alert_settings
+            ),
+        ], spacing=10, wrap=True)
 
         # Group list
         group_section = ft.Container(
@@ -150,6 +168,7 @@ class TelegramToSlackGUI:
                     g for g in groups
                     if query in g.get("telegram_group_name", "").lower()
                     or query in g.get("slack_channel_name", "").lower()
+                    or query in (g.get("telegram_topic_name") or "").lower()
                 ]
             if not groups:
                 self.group_list.controls.append(
@@ -185,6 +204,11 @@ class TelegramToSlackGUI:
                         enabled_icon,
                         ft.Column([
                             ft.Text(group["telegram_group_name"], size=16, weight=ft.FontWeight.BOLD),
+                            *([ft.Row([
+                                ft.Icon(ft.Icons.TAG, size=14, color=ft.Colors.BLUE),
+                                ft.Text(f"Topic: {group.get('telegram_topic_name') or group['telegram_topic_id']}",
+                                        size=12, color=ft.Colors.BLUE),
+                            ], spacing=4)] if group.get("telegram_topic_id") is not None else []),
                             ft.Text(f"→ {group['slack_channel_name']}", size=12, color=ft.Colors.GREY),
                             ft.Text(f"Thread: {thread_mode_text}", size=11, italic=True),
                         ], expand=True),
@@ -243,6 +267,57 @@ class TelegramToSlackGUI:
             hint_text="Loading...",
             disabled=True
         )
+
+        # Topic picker - only shown for Telegram groups that use topics
+        ALL_TOPICS = "all"
+        forum_ids = set()  # chat IDs of groups with topics
+        topic_dropdown = ft.Dropdown(
+            label="Telegram Topic",
+            width=400,
+            visible=False,
+            value=ALL_TOPICS,
+            options=[ft.dropdown.Option(ALL_TOPICS, "All topics")],
+        )
+        topic_status = ft.Text("", size=11, color=ft.Colors.GREY, visible=False)
+
+        async def load_topics(chat_id: int, selected_topic=None):
+            topic_dropdown.visible = topic_status.visible = True
+            topic_dropdown.disabled = True
+            topic_dropdown.options = [ft.dropdown.Option(ALL_TOPICS, "All topics")]
+            topic_dropdown.value = ALL_TOPICS
+            topic_status.value = "Loading topics..."
+            self.page.update()
+            try:
+                topics = await self.forwarder.get_forum_topics(
+                    chat_id,
+                    code_callback=self._request_telegram_code,
+                    password_callback=self._request_telegram_password
+                )
+                topic_dropdown.options += [
+                    ft.dropdown.Option(str(t["id"]), t["title"]) for t in topics
+                ]
+                if selected_topic is not None:
+                    key = str(selected_topic)
+                    if not any(o.key == key for o in topic_dropdown.options):
+                        # Topic was deleted/renamed in Telegram - keep the saved one visible
+                        topic_dropdown.options.append(ft.dropdown.Option(key, group.get("telegram_topic_name") or key))
+                    topic_dropdown.value = key
+                topic_status.value = "All topics = the whole group. Pick one topic to forward only that topic."
+            except Exception as ex:
+                topic_status.value = f"Failed to load topics: {ex}"
+            topic_dropdown.disabled = False
+            self.page.update()
+
+        def on_tg_group_change(e):
+            value = tg_group_dropdown.value
+            if value and int(value) in forum_ids:
+                self.page.run_task(load_topics, int(value))
+            else:
+                topic_dropdown.visible = topic_status.visible = False
+                topic_dropdown.value = ALL_TOPICS
+                self.page.update()
+
+        tg_group_dropdown.on_change = on_tg_group_change
 
         # Search fields
         def filter_tg_options(e):
@@ -310,14 +385,19 @@ class TelegramToSlackGUI:
                     password_callback=self._request_telegram_password
                 )
                 if tg_groups:
+                    forum_ids.update(g["id"] for g in tg_groups if g.get("forum"))
                     all_tg_options = [
-                        ft.dropdown.Option(str(g["id"]), g["name"]) for g in tg_groups
+                        ft.dropdown.Option(str(g["id"]), g["name"] + ("  (topics)" if g.get("forum") else ""))
+                        for g in tg_groups
                     ]
                     tg_group_dropdown.options = all_tg_options.copy()
                     tg_group_dropdown.hint_text = "Select a group"
                     tg_group_dropdown.disabled = False
                     if is_edit:
                         tg_group_dropdown.value = str(group["telegram_group_id"])
+                        if group["telegram_group_id"] in forum_ids:
+                            self.page.run_task(load_topics, group["telegram_group_id"],
+                                               group.get("telegram_topic_id"))
                 else:
                     error_messages.append("No Telegram groups found")
                     tg_group_dropdown.hint_text = "No groups found"
@@ -363,9 +443,19 @@ class TelegramToSlackGUI:
 
             # Get the selected names
             tg_name = next(
-                (opt.text for opt in tg_group_dropdown.options if opt.key == tg_group_dropdown.value),
+                (opt.text for opt in all_tg_options if opt.key == tg_group_dropdown.value),
                 ""
-            )
+            ).removesuffix("  (topics)")
+            if is_edit and not tg_name:
+                tg_name = group["telegram_group_name"]
+
+            # Topic (None = all topics)
+            topic_id = topic_name = None
+            if topic_dropdown.visible and topic_dropdown.value not in (None, ALL_TOPICS):
+                topic_id = int(topic_dropdown.value)
+                topic_name = next(
+                    (opt.text for opt in topic_dropdown.options if opt.key == topic_dropdown.value), ""
+                )
             slack_name = next(
                 (opt.text for opt in slack_channel_dropdown.options if opt.key == slack_channel_dropdown.value),
                 ""
@@ -380,7 +470,9 @@ class TelegramToSlackGUI:
                     slack_channel_id=slack_channel_dropdown.value,
                     slack_channel_name=slack_name,
                     thread_mode=thread_mode_dropdown.value,
-                    enabled=enabled_switch.value
+                    enabled=enabled_switch.value,
+                    telegram_topic_id=topic_id,
+                    telegram_topic_name=topic_name
                 )
             else:
                 # Add new
@@ -389,7 +481,9 @@ class TelegramToSlackGUI:
                     telegram_group_name=tg_name,
                     slack_channel_id=slack_channel_dropdown.value,
                     slack_channel_name=slack_name,
-                    thread_mode=thread_mode_dropdown.value
+                    thread_mode=thread_mode_dropdown.value,
+                    telegram_topic_id=topic_id,
+                    telegram_topic_name=topic_name
                 )
 
             dialog.open = False
@@ -402,6 +496,8 @@ class TelegramToSlackGUI:
                 loading_text,
                 tg_search_field,
                 tg_group_dropdown,
+                topic_dropdown,
+                topic_status,
                 slack_search_field,
                 slack_channel_dropdown,
                 thread_mode_dropdown,
@@ -533,6 +629,85 @@ class TelegramToSlackGUI:
         dialog.open = True
         self.page.update()
 
+    def _show_alert_settings(self, e):
+        """Alert settings: your own Telegram bot + optional heartbeat URL"""
+        notify = self.config.get_notify_config()
+
+        token_field = ft.TextField(label="Bot Token (from @BotFather)", value=notify.get("bot_token", ""),
+                                   width=420, password=True, can_reveal_password=True)
+        chat_field = ft.TextField(label="Chat ID", value=notify.get("chat_id", ""), width=280)
+        heartbeat_field = ft.TextField(
+            label="Heartbeat URL (optional, e.g. https://hc-ping.com/...)",
+            value=notify.get("heartbeat_url", ""), width=420)
+        status = ft.Text("", size=12)
+
+        def set_status(text, ok=True):
+            status.value = text
+            status.color = ft.Colors.GREEN if ok else ft.Colors.RED
+            self.page.update()
+
+        def detect_chat(e):
+            if not token_field.value.strip():
+                set_status("Enter the bot token first", ok=False)
+                return
+            set_status("Looking for your chat...")
+            try:
+                chat_id, name = find_chat_id(token_field.value)
+                chat_field.value = chat_id
+                set_status(f"Found chat: {name or chat_id}")
+            except Exception as ex:
+                set_status(str(ex), ok=False)
+
+        def send_test(e):
+            if not token_field.value.strip() or not chat_field.value.strip():
+                set_status("Enter the bot token and chat ID first", ok=False)
+                return
+            set_status("Sending test message...")
+            try:
+                self.notifier.send_test(token_field.value, chat_field.value)
+                set_status("Test message sent - check Telegram")
+            except Exception as ex:
+                set_status(f"Failed: {ex}", ok=False)
+
+        def save_settings(e):
+            self.config.set_notify_config(token_field.value, chat_field.value, heartbeat_field.value)
+            dialog.open = False
+            self.page.update()
+            if self.is_forwarding:
+                self.notifier.start_heartbeat(self._telegram_connected)  # apply a new heartbeat URL right away
+
+        dialog = ft.AlertDialog(
+            title=ft.Text("Alerts"),
+            content=ft.Column([
+                ft.Text("Get a Telegram message when forwarding starts, stops or fails.", size=12),
+                ft.Text("1. In Telegram, open @BotFather, send /newbot and copy the token.\n"
+                        "2. Open your new bot and press Start.\n"
+                        "3. Paste the token, click Find, then Send test.", size=12, color=ft.Colors.GREY),
+                token_field,
+                ft.Row([chat_field, ft.TextButton("Find", icon=ft.Icons.SEARCH, on_click=detect_chat)]),
+                ft.Divider(),
+                ft.Text("If the laptop shuts down or loses power, the app can't send anything. "
+                        "For that, create a free check at healthchecks.io (Period 5 min, Grace 10 min), "
+                        "connect it to Telegram there, and paste its ping URL:", size=12, color=ft.Colors.GREY),
+                heartbeat_field,
+                status,
+            ], tight=True, width=440, scroll=ft.ScrollMode.AUTO),
+            actions=[
+                ft.TextButton("Send test", on_click=send_test),
+                ft.TextButton("Cancel", on_click=lambda e: setattr(dialog, 'open', False) or self.page.update()),
+                ft.TextButton("Save", on_click=save_settings),
+            ],
+        )
+
+        self.page.overlay.append(dialog)
+        dialog.open = True
+        self.page.update()
+
+    def _telegram_connected(self) -> bool:
+        """Whether the forwarding Telegram client is currently connected"""
+        client = self.forwarder.telegram_handler.client
+        return bool(client and client.is_connected())
+
     def _toggle_forwarding(self, e):
         """Start/stop forwarding"""
         # Disable the button to prevent double clicks
@@ -549,34 +724,145 @@ class TelegramToSlackGUI:
 
             self.page.run_task(self._start_forwarding)
         else:
-            # Stop
+            # Stop (requested by the user, so it isn't reported as a failure)
+            self._stop_requested = True
             self.page.run_task(self._stop_forwarding)
 
-    async def _start_forwarding(self):
-        """Start forwarding"""
-        try:
-            await self.forwarder.start(
-                code_callback=self._request_telegram_code,
-                password_callback=self._request_telegram_password
-            )
+    def _set_status(self, text: str, color):
+        self.status_text.value = text
+        self.status_text.color = color
+        self.page.update()
+
+    async def _wait_unless_stopped(self, seconds: float) -> bool:
+        """Sleep, but wake early if the user clicks Stop. Returns True if stopped."""
+        end = asyncio.get_running_loop().time() + seconds
+        while asyncio.get_running_loop().time() < end:
+            if self._stop_requested:
+                return True
+            await asyncio.sleep(0.5)
+        return self._stop_requested
+
+    def _set_forwarding_active(self, active: bool):
+        """Remember whether forwarding should run, so it resumes after a restart"""
+        if self.config.config_data.get("forwarding_active") != active:
+            self.config.config_data["forwarding_active"] = active
+            self.config.save_config()
+
+    def _maybe_resume_forwarding(self):
+        """Start forwarding automatically when the app opens.
+
+        Skipped only if the user clicked Stop Forwarding last time, or if
+        Telegram/Slack aren't set up yet.
+        """
+        active = self.config.config_data.get("forwarding_active")
+        if active is None:  # never started or stopped yet: start if everything is set up
+            active = self.config.is_telegram_configured() and self.config.is_slack_configured()
+        if not active or not self.config.get_groups():
+            return
+        self.start_stop_btn.disabled = True
+        self._set_status("Resuming...", ft.Colors.ORANGE)
+        reason = ("after the app closed unexpectedly" if "--restarted" in sys.argv
+                  else "when the app opened")
+        self.page.run_task(self._start_forwarding, reason)
+
+    async def _start_forwarding(self, resume_reason: str = None):
+        """Start forwarding, and keep reconnecting if the connection is lost
+
+        resume_reason is set when resuming automatically; then a failed start
+        keeps retrying (e.g. the internet isn't ready yet right after boot).
+        """
+        self._stop_requested = False
+        lost_at = None      # when the connection was lost (None = connected)
+        attempts = 0
+        keep_trying = resume_reason is not None
+        if keep_trying:
+            # Let Stop work while still trying to resume
             self.is_forwarding = True
-            self.status_text.value = "Forwarding"
-            self.status_text.color = ft.Colors.GREEN
             self.start_stop_btn.text = "Stop Forwarding"
             self.start_stop_btn.icon = ft.Icons.STOP
             self.start_stop_btn.bgcolor = ft.Colors.RED
             self.start_stop_btn.disabled = False
             self.page.update()
 
-            # Run forwarding
-            await self.forwarder.telegram_handler.run_until_disconnected()
-        except Exception as ex:
-            self._show_error(f"Failed to start forwarding: {ex}")
-            await self._stop_forwarding()
+        while not self._stop_requested:
+            # --- connect ------------------------------------------------------
+            try:
+                await self.forwarder.start(
+                    code_callback=self._request_telegram_code,
+                    password_callback=self._request_telegram_password
+                )
+            except Exception as ex:
+                if self._stop_requested:
+                    return  # errors while the user is stopping aren't failures
+                if lost_at is None and not keep_trying:
+                    # First manual start failed (bad settings, no internet...): give up
+                    self.notifier.send(f"❌ Forwarding failed to start:\n{ex}")
+                    self._show_error(f"Failed to start forwarding: {ex}")
+                    await self._stop_forwarding()
+                    return
+                # Reconnecting after a lost connection: keep trying
+                attempts += 1
+                print(f"Reconnect attempt {attempts} failed: {ex}")
+                self._set_status(f"Reconnecting... (attempt {attempts})", ft.Colors.ORANGE)
+                if await self._wait_unless_stopped(RECONNECT_DELAY):
+                    return
+                continue
+
+            # --- connected ----------------------------------------------------
+            enabled = sum(1 for g in self.config.get_groups() if g.get("enabled"))
+            if keep_trying:
+                keep_trying = False  # resumed; from now on behave like a normal run
+                self.notifier.send(f"🔄 Forwarding resumed automatically {resume_reason} ({enabled} groups)")
+            elif not self.is_forwarding:
+                self.is_forwarding = True
+                self.start_stop_btn.text = "Stop Forwarding"
+                self.start_stop_btn.icon = ft.Icons.STOP
+                self.start_stop_btn.bgcolor = ft.Colors.RED
+                self.start_stop_btn.disabled = False
+                self.notifier.send(f"✅ Forwarding started ({enabled} groups)")
+            elif lost_at is not None:
+                minutes = max(1, int((time.time() - lost_at) // 60))
+                self.notifier.send(f"✅ Reconnected to Telegram after about {minutes} min - "
+                                   f"forwarding resumed.\nCheck Telegram for messages from that time.")
+            lost_at, attempts = None, 0
+            self._set_forwarding_active(True)
+            self._set_status("Forwarding", ft.Colors.GREEN)
+            self.notifier.start_heartbeat(self._telegram_connected)
+
+            # Runs until the connection ends (Stop button, or connection lost)
+            try:
+                await self.forwarder.telegram_handler.run_until_disconnected()
+            except Exception as ex:
+                print(f"Connection error: {ex}")
+            if self._stop_requested:
+                return
+
+            # --- connection lost: reconnect automatically ----------------------
+            lost_at = time.time()
+            self.notifier.stop_heartbeat()  # heartbeat stops so healthchecks.io notices too
+            self.notifier.send("⚠️ Lost the connection to Telegram (internet down or the computer "
+                               "was asleep). Forwarding is paused - reconnecting automatically "
+                               f"every {RECONNECT_DELAY} s.")
+            self._set_status("Reconnecting...", ft.Colors.ORANGE)
+            try:
+                await self.forwarder.stop()
+            except Exception:
+                pass
+            if await self._wait_unless_stopped(5):
+                return
 
     async def _stop_forwarding(self):
         """Stop forwarding"""
-        await self.forwarder.stop()
+        was_forwarding = self.is_forwarding
+        self.notifier.stop_heartbeat()
+        if self._stop_requested:
+            self._set_forwarding_active(False)  # don't resume on the next start
+            if was_forwarding:
+                self.notifier.send("⏹ Forwarding stopped (Stop Forwarding button).")
+        try:
+            await self.forwarder.stop()
+        except Exception as ex:
+            print(f"Error while stopping: {ex}")
         self.is_forwarding = False
         self.status_text.value = "Stopped"
         self.status_text.color = ft.Colors.GREY
@@ -738,9 +1024,29 @@ class TelegramToSlackGUI:
         """Finish any pending GitHub backup before the window closes"""
         if e.data == "close":
             try:
+                if self.is_forwarding:
+                    self.notifier.stop_heartbeat()
+                    self.notifier.send("⏹ Forwarding stopped: the app was closed.", wait=True)
                 self.git_backup.flush()
             finally:
+                APP_STATE["user_closed"] = True
                 self.page.window.destroy()
+
+
+def _ensure_single_instance():
+    """Exit if another copy is already running (two copies would forward everything twice)."""
+    if sys.platform != "win32":
+        return None
+    import ctypes
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    handle = kernel32.CreateMutexW(None, False, "Local\\TelegramToSlackForwarder")
+    if ctypes.get_last_error() == 183:  # ERROR_ALREADY_EXISTS
+        ctypes.windll.user32.MessageBoxW(
+            None, "Telegram to Slack Forwarder is already running.\n\n"
+                  "Look for its window or its icon in the taskbar.",
+            "Telegram to Slack Forwarder", 0x40)
+        sys.exit(EXIT_ALREADY_RUNNING)
+    return handle  # keep the mutex for the app's lifetime
 
 
 def main(page: ft.Page):
@@ -748,4 +1054,7 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
+    _instance_lock = _ensure_single_instance()
     ft.app(target=main)
+    # run_windows.bat restarts the app unless the user closed the window
+    sys.exit(0 if APP_STATE["user_closed"] else EXIT_UNEXPECTED)

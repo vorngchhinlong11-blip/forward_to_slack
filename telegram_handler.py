@@ -4,6 +4,39 @@ from telethon import TelegramClient, events
 from telethon.tl.types import Message, User, Chat, Channel, MessageService, MessageActionTopicCreate
 from config import Config
 
+GENERAL_TOPIC_ID = 1  # Telegram's fixed ID for a forum's "General" topic
+
+
+async def fetch_forum_topics(client: TelegramClient, chat_id: int) -> list:
+    """Return [{"id", "title"}] for every topic of a forum group, General first."""
+    from telethon.tl.functions.messages import GetForumTopicsRequest
+    from telethon.tl.types import ForumTopic
+
+    topics, seen = [], set()
+    offset_date, offset_id, offset_topic = None, 0, 0
+    while True:
+        result = await client(GetForumTopicsRequest(
+            peer=chat_id, offset_date=offset_date, offset_id=offset_id,
+            offset_topic=offset_topic, limit=100,
+        ))
+        page = [t for t in result.topics if isinstance(t, ForumTopic) and t.id not in seen]
+        if not page:
+            break
+        for t in page:
+            seen.add(t.id)
+            topics.append({"id": t.id, "title": t.title})
+        if len(seen) >= result.count:
+            break
+        last = page[-1]
+        offset_topic, offset_id = last.id, last.top_message
+        last_msg = next((m for m in result.messages if m.id == last.top_message), None)
+        offset_date = last_msg.date if last_msg else None
+
+    if GENERAL_TOPIC_ID not in seen:
+        topics.append({"id": GENERAL_TOPIC_ID, "title": "General"})
+    topics.sort(key=lambda t: (t["id"] != GENERAL_TOPIC_ID, t["title"].lower()))
+    return topics
+
 class TelegramHandler:
     """Telegram API integration class"""
 
@@ -70,34 +103,14 @@ class TelegramHandler:
         chat_id = event.chat_id
         print(f"[DEBUG] Message received: chat_id={chat_id}, text={message.text[:50] if message.text else '(no text)'}...")
 
-        # Check whether this is a monitored group
-        groups = self.config.get_groups()
-        target_group = None
-        for group in groups:
-            if group.get("enabled") and group.get("telegram_group_id") == chat_id:
-                target_group = group
-                break
-
-        if not target_group:
+        # Check whether this chat is monitored at all (cheap check first)
+        candidates = [
+            g for g in self.config.get_groups()
+            if g.get("enabled") and g.get("telegram_group_id") == chat_id
+        ]
+        if not candidates:
             print(f"[DEBUG] Unmonitored group: chat_id={chat_id}")
             return  # Not monitored
-
-        print(f"[DEBUG] Monitored group: {target_group['telegram_group_name']}")
-
-        # Extract message info
-        sender = await event.get_sender()
-        sender_name = self._get_sender_name(sender)
-
-        # Build message link
-        message_link = await self._get_message_link(event.chat, message.id)
-
-        # Download media file
-        media_file = None
-        if message.media:
-            try:
-                media_file = await message.download_media(file="downloads/")
-            except Exception as e:
-                print(f"Failed to download media: {e}")
 
         # Get topic info (for groups using forum topics)
         topic_id = None
@@ -181,6 +194,30 @@ class TelegramHandler:
         except Exception as e:
             print(f"Error getting topic info: {e}")
 
+        # Pick the mapping: a topic-specific one wins over an "All topics" one
+        chat = await event.get_chat()
+        target_group = self._select_group(candidates, topic_id, bool(getattr(chat, "forum", False)))
+        if not target_group:
+            print(f"[DEBUG] Topic {topic_id} of chat {chat_id} is not monitored")
+            return
+
+        print(f"[DEBUG] Monitored group: {target_group['telegram_group_name']}")
+
+        # Extract message info
+        sender = await event.get_sender()
+        sender_name = self._get_sender_name(sender)
+
+        # Build message link
+        message_link = await self._get_message_link(event.chat, message.id)
+
+        # Download media file
+        media_file = None
+        if message.media:
+            try:
+                media_file = await message.download_media(file="downloads/")
+            except Exception as e:
+                print(f"Failed to download media: {e}")
+
         message_data = {
             "group_id": target_group["id"],
             "telegram_group_id": chat_id,
@@ -202,6 +239,24 @@ class TelegramHandler:
         # Invoke callback
         if self.message_callback:
             await self.message_callback(message_data, target_group)
+
+    @staticmethod
+    def _select_group(candidates, topic_id: Optional[int], is_forum: bool) -> Optional[Dict]:
+        """Choose which mapping receives a message.
+
+        A mapping with telegram_topic_id only gets messages from that topic.
+        A mapping without one ("All topics") gets every message that no
+        topic-specific mapping claimed.
+        """
+        # Messages in a forum's "General" topic carry no topic ID; its ID is 1
+        message_topic = topic_id or (GENERAL_TOPIC_ID if is_forum else None)
+        for g in candidates:
+            if g.get("telegram_topic_id") is not None and g["telegram_topic_id"] == message_topic:
+                return g
+        for g in candidates:
+            if g.get("telegram_topic_id") is None:
+                return g
+        return None
 
     async def _get_message_link(self, chat, message_id: int) -> Optional[str]:
         """Build a link to the message"""
@@ -288,7 +343,8 @@ class TelegramHandler:
                 dialogs.append({
                     "id": dialog.id,
                     "name": dialog.name,
-                    "type": "group" if dialog.is_group else "channel"
+                    "type": "group" if dialog.is_group else "channel",
+                    "forum": bool(getattr(entity, "forum", False)),
                 })
 
         print(f"[DEBUG] Telegram: Total {len(dialogs)} groups/channels found")

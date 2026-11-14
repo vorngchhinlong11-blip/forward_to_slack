@@ -1,7 +1,7 @@
 import asyncio
 from typing import Dict
 from config import Config
-from telegram_handler import TelegramHandler
+from telegram_handler import TelegramHandler, fetch_forum_topics
 from slack_handler import SlackHandler
 
 class MessageForwarder:
@@ -129,13 +129,8 @@ class MessageForwarder:
         await self.start()
         await self.telegram_handler.run_until_disconnected()
 
-    async def get_telegram_groups(self, code_callback=None, password_callback=None):
-        """Get the list of Telegram groups"""
-        # If a client exists and is connected
-        if self.telegram_handler.client and self.telegram_handler.client.is_connected():
-            return await self.telegram_handler.get_dialogs()
-
-        # If there is no client or it is disconnected, connect temporarily
+    async def _temp_client(self, code_callback=None, password_callback=None):
+        """Connect a short-lived Telegram client (used when forwarding is stopped)"""
         tg_config = self.config.get_telegram_config()
         if not tg_config.get("api_id") or not tg_config.get("api_hash"):
             raise ValueError("Telegram is not configured")
@@ -163,38 +158,33 @@ class MessageForwarder:
             code_callback=request_code if code_callback else None,
             password=request_password if password_callback else None
         )
+        return client
 
-        dialogs = []
-        seen_ids = set()  # For duplicate ID checks
-        print("[DEBUG] Telegram: Fetching dialogs...")
-        async for dialog in client.iter_dialogs():
-            if dialog.is_group or dialog.is_channel:
-                # Remove duplicate IDs
-                if dialog.id in seen_ids:
-                    continue
+    async def get_telegram_groups(self, code_callback=None, password_callback=None):
+        """Get the list of Telegram groups"""
+        # If a client exists and is connected
+        if self.telegram_handler.client and self.telegram_handler.client.is_connected():
+            return await self.telegram_handler.get_dialogs()
 
-                # Workaround for forum "General" topics showing up as duplicates:
-                # skip only if a Channel with the same name was already added
-                entity = dialog.entity
-                entity_type = type(entity).__name__
-                if entity_type == "Chat":
-                    # A Channel with the same name already exists, so this is a duplicate; skip
-                    if dialog.name in [d["name"] for d in dialogs]:
-                        print(f"[DEBUG] Telegram: Skipped (duplicate Chat): id={dialog.id}, name={dialog.name}")
-                        continue
+        # If there is no client or it is disconnected, connect temporarily
+        client = await self._temp_client(code_callback, password_callback)
+        try:
+            handler = TelegramHandler(self.config)
+            handler.client = client
+            return await handler.get_dialogs()
+        finally:
+            await client.disconnect()
 
-                seen_ids.add(dialog.id)
-                print(f"[DEBUG] Telegram: Added: id={dialog.id}, name={dialog.name}, type={entity_type}")
+    async def get_forum_topics(self, chat_id: int, code_callback=None, password_callback=None):
+        """Get the topics of a forum group: [{"id", "title"}]"""
+        if self.telegram_handler.client and self.telegram_handler.client.is_connected():
+            return await fetch_forum_topics(self.telegram_handler.client, chat_id)
 
-                dialogs.append({
-                    "id": dialog.id,
-                    "name": dialog.name,
-                    "type": "group" if dialog.is_group else "channel"
-                })
-
-        print(f"[DEBUG] Telegram: Total {len(dialogs)} groups/channels found")
-        await client.disconnect()
-        return dialogs
+        client = await self._temp_client(code_callback, password_callback)
+        try:
+            return await fetch_forum_topics(client, chat_id)
+        finally:
+            await client.disconnect()
 
     def get_slack_channels(self):
         """Get the list of Slack channels"""

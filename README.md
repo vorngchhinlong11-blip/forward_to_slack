@@ -114,6 +114,7 @@ The start script automatically:
    - Groups you're a member of are listed automatically
    - On first use you may be asked for a verification code (enter it in the GUI)
    - **Use the search box to filter by group name**
+   - **Groups with topics** are marked "(topics)". A **Telegram Topic** picker appears below: keep **All topics** to forward the whole group, or pick one topic to forward only that topic. You can add the same group several times to send different topics to different Slack channels; a topic-specific entry takes priority over an "All topics" entry for the same group.
 3. Select a Slack channel
    - Choose from the channels the bot has been added to
    - **Use the search box to filter by channel name**
@@ -152,6 +153,27 @@ python run_server.py           # forward until stopped
 ```
 
 Never run the laptop app's forwarding and the server at the same time.
+
+### Alerts when forwarding stops
+
+Click **Alerts** to get a Telegram message from your own bot when forwarding starts, is stopped with the button, fails, or the app is closed; when the computer is going to sleep and when it wakes up (with how long forwarding was paused); and when the Telegram connection is lost and comes back.
+
+If the connection is lost (internet down, computer asleep), the app **reconnects automatically** every 30 seconds — the status shows "Reconnecting..." — so you don't need to click Start Forwarding again. Alerts that can't be sent while offline are kept and delivered as soon as the internet is back, marked "Delayed alert".
+
+1. In Telegram, open **@BotFather**, send `/newbot` and copy the token
+2. Open your new bot and press **Start**
+3. In **Alerts**, paste the token, click **Find** (fills in your chat ID), then **Send test** and **Save**
+
+**If the computer shuts down, loses power or loses internet**, the app can't send anything. To be alerted in that case too, create a free check at https://healthchecks.io (Period 5 min, Grace 10 min), add its Telegram integration, and paste the check's ping URL into **Heartbeat URL**. The app pings it every 5 minutes while forwarding; if the pings stop, healthchecks.io messages you.
+
+**Running on a laptop 24/7**: in Windows power settings, set "Put the computer to sleep" to **Never** when plugged in, and set "When I close the lid" to **Do nothing**.
+
+### Automatic restart and resume
+
+- **Restart after a crash**: `run_windows.bat` watches the app. If it closes unexpectedly (crash, killed for low memory), it is restarted after 15 seconds. Closing the window yourself does not restart it.
+- **Resume forwarding**: if forwarding was on when the app closed, it starts again by itself the next time the app opens (retrying until the internet is ready). Clicking **Stop Forwarding** turns this off.
+- **One copy only**: opening the app twice shows "already running" instead of starting a second copy (which would post every message twice).
+- **Start at Windows login** (optional): run `install_autostart.bat` once; undo with `remove_autostart.bat`. Combined with resume, forwarding comes back by itself after a Windows restart or update. Windows must be logged in for it to start.
 
 ### Backing up and restoring
 
