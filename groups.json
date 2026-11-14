@@ -862,5 +862,16 @@
     "slack_channel_name": "#pisa-sales_progress",
     "thread_mode": "daily",
     "enabled": true
+  },
+  {
+    "id": "6f73e723-26d2-41db-9952-eba220727596",
+    "telegram_group_id": -1003980647426,
+    "telegram_group_name": "SELECT STORE SORA",
+    "slack_channel_id": "C0A1S1Z1U3C",
+    "slack_channel_name": "#pisa-sales_progress",
+    "thread_mode": "daily",
+    "enabled": true,
+    "telegram_topic_id": 674,
+    "telegram_topic_name": "Daily report ( SELECT STORE STORA)"
   }
 ]
