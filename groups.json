@@ -864,5 +864,14 @@
     "enabled": true,
     "telegram_topic_id": 674,
     "telegram_topic_name": "Daily report ( SELECT STORE STORA)"
+  },
+  {
+    "id": "999b9b0d-2f6c-4c81-8714-ded0b3397fc9",
+    "telegram_group_id": -1002223907226,
+    "telegram_group_name": "AKARA <=> S.E.A.T.S Inc.",
+    "slack_channel_id": "C015PKQS6P2",
+    "slack_channel_name": "#nova-akara-media_creation",
+    "thread_mode": "daily",
+    "enabled": true
   }
 ]
