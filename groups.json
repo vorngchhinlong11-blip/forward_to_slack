@@ -873,5 +873,14 @@
     "slack_channel_name": "#nova-akara-media_creation",
     "thread_mode": "daily",
     "enabled": true
+  },
+  {
+    "id": "e4bfd9cf-a662-4497-97b9-c4ff3758e03c",
+    "telegram_group_id": -1002446327347,
+    "telegram_group_name": "D2C_Food Processing Biz",
+    "slack_channel_id": "C06K5TH9RRN",
+    "slack_channel_name": "#seats-dept-food-process_general",
+    "thread_mode": "daily",
+    "enabled": true
   }
 ]
