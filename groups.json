@@ -882,5 +882,14 @@
     "slack_channel_name": "#seats-dept-food-process_general",
     "thread_mode": "daily",
     "enabled": true
+  },
+  {
+    "id": "65e89ffd-0c2b-4d4f-830a-d7b9c05a78dc",
+    "telegram_group_id": -5560911267,
+    "telegram_group_name": "JFP Cambodia - S.E.A.T.S Inc.",
+    "slack_channel_id": "C0BP5E1HDGS",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh_jfp",
+    "thread_mode": "daily",
+    "enabled": true
   }
 ]
