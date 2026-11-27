@@ -891,5 +891,14 @@
     "slack_channel_name": "#seatsfarm-op-supplier-kh_jfp",
     "thread_mode": "daily",
     "enabled": true
+  },
+  {
+    "id": "0127bbfd-d539-4b78-9a1e-dca86e841928",
+    "telegram_group_id": -5449115092,
+    "telegram_group_name": "Memot pepper MAC - S.E.A.T.S Inc.",
+    "slack_channel_id": "C0CM84GQNKX",
+    "slack_channel_name": "#seatsfarm-op-supplier-kh-memot-tboung-khmum-pepper_mac",
+    "thread_mode": "daily",
+    "enabled": true
   }
 ]
